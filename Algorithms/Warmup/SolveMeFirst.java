@@ -14,6 +14,7 @@ public class SolveMeFirst {
 	     int b;
 	     b = in.nextInt();
 	     int sum;
+	     in.close();
 	     sum = solveMeFirst(a, b);
 	     System.out.println(sum);
 	}

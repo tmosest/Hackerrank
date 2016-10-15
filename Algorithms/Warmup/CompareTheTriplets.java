@@ -14,6 +14,7 @@ public class CompareTheTriplets {
         int b0 = in.nextInt();
         int b1 = in.nextInt();
         int b2 = in.nextInt();
+        in.close();
         int amy[] = new int[] {
            a0, a1, a2
     	};
