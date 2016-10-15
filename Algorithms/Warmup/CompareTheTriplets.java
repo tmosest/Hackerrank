@@ -1,6 +1,9 @@
 package Warmup;
 import java.util.*;
-
+/**
+ *	Algorithms -> Warmup -> Compare The Triplets
+ *	Easy (Super Easy)
+ */
 public class CompareTheTriplets {
 
 	public static void main(String[] args) {
