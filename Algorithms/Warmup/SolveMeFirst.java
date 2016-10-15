@@ -1,6 +1,9 @@
 package Warmup;
 import java.util.*;
-
+/**
+ *	Algorithms -> Warmup -> Solve Me First 
+ *	Easy (Super Easy)
+ */
 public class SolveMeFirst {
 
 	public static void main(String[] args) {
