@@ -1,7 +1,10 @@
 package Warmup;
 
 import java.util.Scanner;
-
+/**
+ *	Algorithms -> Warmup -> Staircase
+ *	Easy (Super Easy)
+ */
 public class Staircase {
 
 	public static void main(String[] args) {
