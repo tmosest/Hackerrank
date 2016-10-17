@@ -2,6 +2,10 @@ package Implementation;
 
 import java.util.Scanner;
 
+/**
+ *	Algorithms -> Warmup -> Kangaroo
+ *	Easy (Super Easy)
+ */
 public class Kangaroo {
 
 	public static void main(String[] args) {
