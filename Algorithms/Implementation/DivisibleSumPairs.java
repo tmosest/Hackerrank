@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 /**
  *	Algorithms -> Implementations -> Divisible Sum Pairs
- *	Easy (Super Easy)
+ *	Easy
  */
 public class DivisibleSumPairs {
 
