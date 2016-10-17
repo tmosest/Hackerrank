@@ -3,7 +3,7 @@ package Implementation;
 import java.util.Scanner;
 
 /**
- *	Algorithms -> Warmup -> Kangaroo
+ *	Algorithms -> Implementations -> Kangaroo
  *	Easy (Super Easy)
  */
 public class Kangaroo {
