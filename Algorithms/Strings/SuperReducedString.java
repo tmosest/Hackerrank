@@ -25,27 +25,27 @@ public class SuperReducedString {
 		for(char c : input.toCharArray()) {
 		  chars.add(c);
 		}
-		char[] inputArray = input.toCharArray();
-		//Arrays.sort(inputArray);
-		char toLook = inputArray[0];
-		int pairs = 1;
-		int  k = 1;
 		boolean foundPairs = true;
 		while(foundPairs) {
+			int pairs = 1;
 			boolean pairsFound = false;
-			for(int i = 1; i < input.length(); i++) {
-				if(inputArray[i] == toLook) {
-					pairs++;
-					if(pairs % 2 == 0) {
-						int toTestStart = chars.indexOf(inputArray[i]);
-						chars.remove(toTestStart);
-						toTestStart = chars.indexOf(inputArray[i]);
-						chars.remove(toTestStart);
-						pairsFound = true;
+			if(chars.size() > 0) {
+				char toLook = chars.get(0);
+				for(int i = 1; i < chars.size(); i++) {
+					char test = chars.get(i);
+					if(test == toLook) {
+						pairs++;
+						if(pairs % 2 == 0) {
+							chars.remove(i - 1);
+							chars.remove(i - 1);
+							pairsFound = true;
+							pairs = 1;
+							break;
+						}
+					} else {
+						pairs = 1;
+						toLook = test;
 					}
-				} else {
-					pairs = 1;
-					toLook = inputArray[i];
 				}
 			}
 			foundPairs = pairsFound;
