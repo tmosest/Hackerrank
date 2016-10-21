@@ -2,6 +2,10 @@ package Strings;
 
 import java.util.Scanner;
 
+/**
+ *	Algorithms -> Strings -> Mars Exploration
+ *	Easy
+ */
 public class MarsExploration {
 
 	public static void main(String[] args) {
