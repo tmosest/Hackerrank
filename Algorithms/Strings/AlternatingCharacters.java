@@ -2,6 +2,10 @@ package Strings;
 
 import java.util.Scanner;
 
+/**
+ *	Algorithms -> Strings -> Alternating Characters
+ *	Easy
+ */
 public class AlternatingCharacters {
 
 	public static void main(String[] args) {
