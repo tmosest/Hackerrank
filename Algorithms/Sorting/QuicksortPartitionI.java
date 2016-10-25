@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- *	Algorithms -> Sorting -> Running Time of Algorithms
+ *	Algorithms -> Sorting -> Quicksort I Partition
  *	Easy
  */
 public class QuicksortPartitionI {
