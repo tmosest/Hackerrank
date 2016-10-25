@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class InsertionSortII {
 
 	public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
+       Scanner in = new Scanner(System.in);
        int s = in.nextInt();
        int[] ar = new int[s];
        for(int i=0;i<s;i++){
