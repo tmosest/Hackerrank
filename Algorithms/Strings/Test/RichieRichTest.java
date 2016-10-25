@@ -18,6 +18,10 @@ public class RichieRichTest {
 	
 	@Test
 	public void superPalindromeOptimizer0() {
+		/**
+		  4 1
+		  3943
+		 */
 		String num = "3943";
 		String largePalidrome = RichieRich.superPalindromeOptimizer(num, 1);
 		assertEquals("3993", largePalidrome);
@@ -57,6 +61,10 @@ public class RichieRichTest {
 	
 	@Test
 	public void superPalindromeOptimizer6() {
+		/*
+		 5 1
+		 12321
+		 */
 		String num = "12321";
 		String largePalidrome = RichieRich.superPalindromeOptimizer(num, 1);
 		assertEquals("12921", largePalidrome);
@@ -69,11 +77,20 @@ public class RichieRichTest {
 		
 		String answer = out.readLine();
 		
+		System.out.print(answer.length());
+		
 		String line1 = in.readLine();
 		String num = in.readLine();
-		System.out.println(num.length());
-		System.out.print(num.substring(0, 100));
 		String largePalidrome = RichieRich.superPalindromeOptimizer(num, Integer.parseInt(line1.split(" ")[1]));
+		
+		System.out.println(answer.substring(21702, 21802));
+		System.out.println(largePalidrome.substring(21702, 21802));
+		
+		for(int i = 0; i < num.length(); i++)
+		{
+			assertEquals("("+i+","+answer.charAt(i)+")","("+i+","+largePalidrome.charAt(i)+")");
+		}
+		
 		assertEquals(answer, largePalidrome);
 	}
 }

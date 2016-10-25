@@ -45,7 +45,7 @@ public class RichieRich {
 		
 		} else {
 		
-			int numChangesToPalindrome = 0;
+			long numChangesToPalindrome = 0;
 			
 			String inputReversed = new StringBuffer(input).reverse().toString();
 			
@@ -56,87 +56,55 @@ public class RichieRich {
 				if(inputArray[i] != reversedArray[i]) numChangesToPalindrome++;
 			}
 			
-			BigInteger result = new BigInteger(input);
-			String resultStr = input;
-			
 			if(numChangesToPalindrome > digitsCanChange) {
 				
 				palidrome = "-1";
 			
 			} else {
+				int changes = 0;
+				int n = inputArray.length;
 				
-				System.out.println(numChangesToPalindrome);
-				for(int i = 0; i < inputArray.length / 2; i++) {
-					
-					System.out.println(i);
-					
-					char digit = inputArray[i];
-					char inverseDigit = reversedArray[i];
-					
-					boolean canOptimize = false;
-					
-					if(digitsCanChange > numChangesToPalindrome) {
-						//System.out.println("digit:  " + digit);
-						//System.out.println("inverseDigit:  " + inverseDigit);
-						if(digit != '9' || inverseDigit != '9') {
-							canOptimize = true;
-							if(digit != '9' && inverseDigit != '9') {
-								if(digit != inverseDigit && numChangesToPalindrome > 0) numChangesToPalindrome--;
-								if(digitsCanChange - 2 >= numChangesToPalindrome) {
-									digitsCanChange -= 2;
-								} else {
-									canOptimize = false;
-								}
-							} else {
-								digitsCanChange--;
-							}
-							digit = '9';
-							inverseDigit = '9';
-							//System.out.println("canOptimize: " + canOptimize);
-							//System.out.println("digits need: " + numChangesToPalindrome);
-							//System.out.println("digits can: " + digitsCanChange);
-						}
-					}
-					
-					if(digit != inverseDigit || canOptimize) {
-						char[] testArray1 = resultStr.toCharArray();
-						char[] testArray2 = resultStr.toCharArray();
-						if(canOptimize) {
-							testArray1[i] = inverseDigit;
-							testArray1[inputArray.length - i - 1] = digit;
-						} else {
-							testArray1[i] = inverseDigit;
-							testArray2[inputArray.length - i - 1] = digit;
-						}
-						String test1 = String.copyValueOf(testArray1);
-						String test2 = String.copyValueOf(testArray2);
-						//System.out.println("test1: " + test1);
-						//System.out.println("test2: " + test2);
-						BigInteger test1Num = new BigInteger(test1);
-						BigInteger test2Num = new BigInteger(test2);
-						if(test1Num.compareTo(test2Num) == 1) {
-							if(test1Num.compareTo(result) == 1) {
-								result = test1Num;
-								resultStr = String.valueOf(testArray1);
-							}
-						} else {
-							if(test2Num.compareTo(result) == 1) {
-								result = test2Num;
-								resultStr = String.valueOf(testArray2);
-							}
-						}
-					}
-				}
+				boolean[] changed = new boolean[inputArray.length / 2];
+				char[] finalPalidrome = new char[inputArray.length];
 				
+				if (inputArray.length % 2 == 1)
+					 finalPalidrome[inputArray.length / 2] = input.charAt(inputArray.length / 2);
+				 
+				for (int i = 0; i < n / 2; ++i) {
+					 	
+			            char lc = input.charAt(i);
+			            char rc = input.charAt(n - i - 1);
+			            //System.out.println(lc + " " + rc + " " +  (char) Math.max(lc, rc));
+			 
+			            if (lc != rc) {
+			                changes++;
+			                changed[i] = true;
+			            }
+			 
+			            char newChar = (char) Math.max(lc, rc);
+			            finalPalidrome[i] = newChar;
+			            finalPalidrome[n - i - 1] = newChar;
+			    }
 				
-				if(resultStr.length() % 2 == 1 && digitsCanChange == 1) {
-					char[] testArray1 = resultStr.toCharArray();
-					testArray1[inputArray.length / 2] = '9';
-					resultStr = String.valueOf(testArray1);
-				}
-				
-				palidrome = String.valueOf(resultStr);
-			
+				// We have a palindrome, now, if any changes left...
+		        for (int i = 0; i < n / 2; ++i) {
+		            if (digitsCanChange - changes >= 1 && changed[i] && finalPalidrome[i] != '9') {
+		            	finalPalidrome[i] = '9';
+		            	finalPalidrome[n - i - 1] = '9';
+		                changes += 1;
+		            }
+		            if (digitsCanChange - changes >= 2 && !changed[i] && finalPalidrome[i] != '9') {
+		            	finalPalidrome[i] = '9';
+		            	finalPalidrome[n - i - 1] = '9';
+		                changes += 2;
+		            }
+		        }
+		        if (n % 2 == 1 && digitsCanChange - changes >= 1) {
+		        	finalPalidrome[n / 2] = '9';
+		            changes += 1;
+		        }
+		        
+		        palidrome = String.valueOf(finalPalidrome);
 			}
 		}
 		return palidrome;
