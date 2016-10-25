@@ -2,6 +2,11 @@ package Sorting;
 
 import java.util.Scanner;
 
+
+/**
+ *	Algorithms -> Sorting -> Insertion Sort II
+ *	Easy
+ */
 public class InsertionSortII {
 
 	public static void main(String[] args) {

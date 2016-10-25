@@ -2,6 +2,11 @@ package Sorting;
 
 import java.util.Scanner;
 
+
+/**
+ *	Algorithms -> Sorting -> Running Time of Algorithms
+ *	Easy
+ */
 public class RunningTimeOfAlgorithms {
 	
 	public static void main(String[] args) {
