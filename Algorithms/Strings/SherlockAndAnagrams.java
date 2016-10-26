@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+/**
+ *	Algorithms -> Strings -> Sherlock And Anagrams
+ *	Medium
+ */
 public class SherlockAndAnagrams {
 
 	public static void main(String[] args) {
