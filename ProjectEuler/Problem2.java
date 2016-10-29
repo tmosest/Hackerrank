@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 /**
  * Project Euler #2: Even Fibonacci numbers
- *
+ * Easy
  */
 public class Problem2 {
 	public static void main(String[] args) {

@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 /**
  * Project Euler #1: Multiples of 3 and 5
- *
+ * Easy
  */
 public class Problem1 {
 
