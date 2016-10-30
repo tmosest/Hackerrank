@@ -2,6 +2,10 @@ package Walmart;
 
 import java.util.Scanner;
 
+/**
+ *	Algorithms ->  WalmartLabs Codesprint (Algorithms) -> Hiking Selfies
+ *	Easy
+ */
 public class HikingSelfies {
 
 	public static void main(String[] args) {
