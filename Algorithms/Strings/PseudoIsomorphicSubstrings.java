@@ -1,4 +1,4 @@
-package Implementation;
+package Strings;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -75,7 +75,7 @@ public class PseudoIsomorphicSubstrings {
 		    }
 			
 			stringSets.add(words);
-			System.out.println(words);
+			//System.out.println(words);
 		}
 		
 		for(ArrayList<String> set: stringSets) {
@@ -115,7 +115,7 @@ public class PseudoIsomorphicSubstrings {
 			}
 			//System.out.println(setCount);
 			System.out.println(uniqueSet.size());
-			System.out.println(uniqueSet);
+			//System.out.println(uniqueSet);
 		}
 		
 		return setSizes;
