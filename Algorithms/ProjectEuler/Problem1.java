@@ -1,5 +1,6 @@
-import java.util.Scanner;
+package ProjectEuler;
 
+import java.util.Scanner;
 /**
  * Project Euler #1: Multiples of 3 and 5
  * Easy
