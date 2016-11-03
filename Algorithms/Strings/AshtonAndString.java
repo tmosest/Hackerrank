@@ -11,6 +11,8 @@ import java.util.Scanner;
  */
 public class AshtonAndString {
 
+	
+	
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
 		
@@ -72,5 +74,7 @@ public class AshtonAndString {
 		
 		return result;
 	}
-
+	
+	
+	
 }
