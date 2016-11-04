@@ -8,10 +8,29 @@ import java.util.Scanner;
 /**
  *	Algorithms -> Strings -> Ashton and String
  *	Advanced
+ *
+ *	Site on Algorithms http://algs4.cs.princeton.edu/home/
  */
 public class AshtonAndString {
 
+	/*
+	 * Code needed to construct a Suffix Array
+	 */
 	
+	
+	private class myTuple {
+		public int originalIndex;
+		public int firstHalf;
+		public int secondHalf;
+	}
+	
+	
+	public static int[] constructSuffixArray()
+	{
+		return null;
+	}
+	
+	// end suffix array code
 	
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
