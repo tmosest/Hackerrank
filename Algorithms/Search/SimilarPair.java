@@ -4,6 +4,20 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+/**
+ *	Algorithms -> Search -> Similar Pairs
+ *	Advanced
+ *
+ * Sample Input:
+    5 2
+	3 2
+	3 1
+	1 4
+	1 5
+ *
+ * Sample Output:
+    4
+ */
 public class SimilarPair {
 	private static final String NEWLINE = System.getProperty("line.separator");
 	
@@ -31,8 +45,10 @@ public class SimilarPair {
 		String graphString = graph.toString();
 		System.out.println(graphString);
 		
-		DepthFirstSearch dps = new DepthFirstSearch(graph, rootNode, kSum);
-		System.out.println(dps.count());
+		for(int i = 1; i < numNodes; i ++) {
+			DepthFirstSearch dps = new DepthFirstSearch(graph, rootNode, kSum);
+			System.out.println(dps.count());
+		}
 	}
 	
 	private static class DepthFirstSearch 
