@@ -226,7 +226,7 @@ nvzjkcahjwlhmdiuobjdwbanmvrtadopapbktdtezellktgywrdstdhhayaadqrdhspavjgxprk
 		SuffixArrayX suffixArray = new SuffixArrayX(input);
 		int indexCount = 1;
 		for(int s_i = 0; s_i < 1; s_i++) {
-			String suffix = suffixArray.select(s_i);
+			String suffix = suffixArray.select(0);
 			for(int i = 1; i < suffix.length() + 1; i++) {
 				String subStr = suffix.substring(0, i);
 				for(int k = 0; k < subStr.length(); k++) {
