@@ -53,16 +53,15 @@ public class PseudoIsomorphicSubstrings {
 	
 	public static void countPseudoIsomorphicSubstring(String input) 
 	{	
-		for(int char_i = 1; char_i < input.length() + 1; char_i++) {
-			String input_i = input.substring(0, char_i);
+		//String input_i = input.substring(0, char_i);
 			
-			ArrayList<String> setOfIsomorphisms = new ArrayList<String>(); 
+		ArrayList<String> setOfIsomorphisms = new ArrayList<String>(); 
 			
-			SuffixArrayX suffixArray = new SuffixArrayX(input_i);
+		SuffixArrayX suffixArray = new SuffixArrayX(input);
 			
-			for(int s_i = 0; s_i < input_i.length(); s_i++) {
-				String suffix = suffixArray.select(s_i);
-				//System.out.println(suffix);
+		for(int s_i = 0; s_i < input.length(); s_i++) {
+			String suffix = suffixArray.select(s_i);
+			//System.out.println(suffix);
 				int lcp = -1;
 				if(s_i > 0) {
 					lcp = suffixArray.lcp(s_i);
@@ -79,13 +78,12 @@ public class PseudoIsomorphicSubstrings {
 					}
 					if(!hasIsomorphism) {
 						setOfIsomorphisms.add(subStr);
-						//System.out.println(subStr);
+						System.out.println(subStr);
 					}
 				}
 			} //end for s_i
 			int size = setOfIsomorphisms.size() - 1;
 			System.out.println(size);
-		}//end char_i
 	}
 	
 		// start suffix array code
