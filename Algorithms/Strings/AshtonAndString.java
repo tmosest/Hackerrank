@@ -10,6 +10,9 @@ import java.util.Scanner;
  *	Advanced
  *
  *	Site on Algorithms http://algs4.cs.princeton.edu/home/
+ *	Explains Suffix Array and LCP: 
+ *	http://stackoverflow.com/questions/13213783/finding-all-distinct-substring-of-a-string
+ *
  */
 public class AshtonAndString {
 	
@@ -200,7 +203,6 @@ public class AshtonAndString {
 	
 	/**
 	 * Takes a string a returns the char at index of the concatenated sorted string of all substrings
-	 * http://stackoverflow.com/questions/13213783/finding-all-distinct-substring-of-a-string
 	 * 1
 nvzjkcahjwlhmdiuobjdwbanmvrtadopapbktdtezellktgywrdstdhhayaadqrdhspavjgxprk
 2071
