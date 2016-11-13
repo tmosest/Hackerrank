@@ -21,7 +21,15 @@ public class HackerlandRadioTransmitters {
         in.close();
         
         Arrays.sort(x);
-        int totalDistance = 0;
+        int numberNeedeed = 0;
+        boolean[] isCovered = new boolean[n];
+        for(int i = 1; i < n - 1; i++) {
+        	if(!isCovered[i]) {
+        		int house0 = x[i];
+        		int house1 = x[i] + 1;
+        	}
+        }
+        /*
         for(int i = 1; i < n; i++) {
         	totalDistance += (x[i] - x[i - 1]);
         }
@@ -31,6 +39,7 @@ public class HackerlandRadioTransmitters {
         //System.out.println(atenaRange);
         int numberNeedeed = (int) Math.ceil( (double) totalDistance / (2 * k + 1));
         System.out.println(numberNeedeed);
+        */
 	}
 
 }
