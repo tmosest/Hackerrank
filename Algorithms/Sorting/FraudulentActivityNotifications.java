@@ -52,7 +52,6 @@ public class FraudulentActivityNotifications {
 			subArray[i - start] = array[i];
 			//System.out.print(subArray[i - start] + " ");
 		}
-		Arrays.sort(subArray);
 		double median = calculateMeidan(subArray);
 		return median;
 	}
@@ -62,10 +61,57 @@ public class FraudulentActivityNotifications {
 		int arraySize = array.length;
 		double median = 0;
 		if(arraySize % 2 == 1) {
-			median = (double) array[arraySize/2];
+			median = (double) selectIterative(array, arraySize/2);
 		} else {
-			median =  (double) ( array[arraySize/2] + array[arraySize/2 - 1] ) / 2;
+			median =  (double) ( selectIterative(array, arraySize/2) + selectIterative(array, arraySize/2 - 1) ) / 2;
 		}
 		return median;
 	}
+	
+	public static int selectIterative(int[] array, int n) {
+		return iterative(array, 0, array.length - 1, n);
+	}
+	
+  	public static int iterative(int[] array, int left, int right, int n) {
+  		if(left == right) {
+  			return array[left];
+  		}
+  		
+  		for(;;) {
+  			int pivotIndex = randomPivot(left, right);
+  			pivotIndex = partition(array, left, right, pivotIndex);
+  			
+  			if(n == pivotIndex) {
+  				return array[n];
+  			} else if(n < pivotIndex) {
+  				right = pivotIndex - 1;
+  			} else {
+  				left = pivotIndex + 1;
+  			}
+  		}
+	}
+  	
+  	private static int partition(int[] array, int left, int right, int pivotIndex) {
+		int pivotValue = array[pivotIndex];
+		swap(array, pivotIndex, right); // move pivot to end
+		int storeIndex = left;
+		for(int i = left; i < right; i++) {
+			if(array[i] < pivotValue) {
+				swap(array, storeIndex, i);
+				storeIndex++;
+			}
+		}
+		swap(array, right, storeIndex); // Move pivot to its final place
+		return storeIndex;
+	}
+	
+	private static void swap(int[] array, int a, int b) {
+		int tmp = array[a];
+		array[a] = array[b];
+		array[b] = tmp;
+	}
+
+	private static int randomPivot(int left, int right) {
+		return left + (int) Math.floor(Math.random() * (right - left + 1));
+	}	
 }
