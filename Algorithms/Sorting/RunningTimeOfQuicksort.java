@@ -3,76 +3,64 @@ package Sorting;
 import java.util.Scanner;
 
 public class RunningTimeOfQuicksort {
-	public static int quickSortCount = 0;
-	public static int insertionSortCount = 0;
 	
-	public static int[] quickSort;
-	public static int[] insSort;
-	
-	public static void main(String[] args) {
-		Scanner in = new Scanner(System.in);
-		
-		int arraySize = in.nextInt();
-		quickSort = new int[arraySize];
-		insSort = new int[arraySize];
-		
-		for(int i = 0; i < arraySize; i++) {
-			quickSort[i] = in.nextInt();
-			insSort[i] = quickSort[i];
-		}
-		
-		in.close();
-		quick(0 , quickSort.length-1);
-		insertIntoSortedMoves(insSort);
-		//System.out.println("quickSortCount: " + quickSortCount);
-		//System.out.println("insertionSortCount: " + insertionSortCount);
-		System.out.println(insertionSortCount - quickSortCount);
-	}
-	
-	public static void insertIntoSortedMoves(int[] ar) {
-		for(int i = 1; i < ar.length; i++) {
-			int j = i;
-			while(j > 0 && ar[j] < ar[j-1]) {
-				int holder = ar[j];
-				ar[j] = ar[j-1];
-				ar[j-1] = holder;
-				j--;
-				insertionSortCount++;
-			}
-		}
+	static int count;
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        int[] a = new int[n];
+        for (int i = 0; i < n; i++) {
+            a[i] = in.nextInt();
+        }
+        in.close();
+        quickSort(a.clone());
+        int quickSwaps = count;
+        count = 0;
+        insertionSort(a.clone());
+        int insertionSwaps = count;
+        System.out.println(insertionSwaps - quickSwaps);
+    }
+
+    private static void insertionSort(int[] array) {
+        for (int i = 1; i < array.length; i++) {
+            for (int j = i; j > 0; j--) {
+                if (array[j - 1] > array[j]) {
+                    swap(array, j - 1, j);
+                }
+            }
+        }
+    }
+
+    private static void quickSort(int[] a) {
+        quickSort(a, 0, a.length - 1);
+    }
+
+    private static void quickSort(int[] a, int lo, int hi) {
+        if (lo >= hi) return;
+        int p = partition(a, lo, hi);
+        quickSort(a, lo, p - 1);
+        quickSort(a, p + 1, hi);
+    }
+
+    private static int partition(int[] a, int lo, int hi) {
+        int v = a[hi];
+        int j = lo;
+        for (int i = lo; i < hi; i++) {
+            if (a[i] < v) {
+                swap(a, i, j++);
+            }
+        }
+        swap(a, j, hi);
+        return j;
+    }
+
+    private static void swap(int[] a, int i, int j) {
+        count++;
+        if (i == j) return;
+        int t = a[i];
+        a[i] = a[j];
+        a[j] = t;
     }
 	
-	static void quick(int l, int h){
-	    if(h-l<=0) {
-	        return;
-	    }
-	    if(h-l == 1){
-	        if(quickSort[h]<quickSort[l])
-	            swap(l,h);
-	        return;
-	    }
-	    int p = quickSort[h];
-	    int q = l;
-	    for(int i = l; i < h; i++){
-	        if(quickSort[i] < p){
-	            if(i > q){
-	                swap(i,q);
-	                q++;
-	            }else if(i == q){
-	                q++;
-	                quickSortCount++;
-	            }
-	        }
-	    }
-	    swap(q,h);
-	    quick(l,q-1);
-	    quick(q+1,h);
-	}
-	
-	static void swap(int x, int y){
-	    int temp = quickSort[x];
-	    quickSort[x] = quickSort[y];
-	    quickSort[y] = temp;
-	    quickSortCount++;
-	}
 }
