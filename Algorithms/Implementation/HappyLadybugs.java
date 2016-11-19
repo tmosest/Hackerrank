@@ -9,61 +9,58 @@ import java.util.Scanner;
  *	Easy
  */
 public class HappyLadybugs {
-	
-	public static boolean isSame(String str) {
-		 boolean isSame = true;
-		 
-		 for (int i = 1; i < str.length() - 1; i++) {
-			 if (str.charAt(i) != str.charAt(i - 1)) {
-				 isSame = false;
-		 		break;
-		 	 }
-		 }
-		 return isSame;
-	}
 
 	public static void main(String[] args) {
-		Scanner in = new Scanner(System.in);
+		Scanner in = new Scanner(System.in); int Q = in.nextInt();
+	    for(int a0 = 0; a0 < Q; a0++) {
+	        int n = in.nextInt();
+	        String b = in.next();
+	        if(b.length()==1){
+	            if(b.equals("_")){
+	                System.out.println("YES"); 
+	            }
+	            else{
+	                System.out.println("NO");
+	            }                
+	        }
+	        else
+	        {
+	            HashMap<Character,Integer> map = new HashMap<>();
+	            int underscores=0;
+	            for(int i=0;i<b.length();i++){
+	                char c = b.charAt(i);
+	                if(c!='_'){
+	                if(!map.containsKey(c))
+	                    map.put(c, 1);
+	                else
+	                    map.put(c, map.get(c)+1);
+	                }else underscores++;
+	            }
+	            boolean happybug = true;
+	            if(underscores>0)
+	            for(Entry e:map.entrySet()){
+	                if(((int)e.getValue())==1){
+	                    happybug=false;break;
+	                }
+	            }
+	                else{
+	                    for(int i=0;i<b.length();i++){
+	                        char curr = b.charAt(i);
+	                        boolean happy = false;
+	                        if(i+1<b.length())
+	                            happy = curr == b.charAt(i+1);
+	                        if(!happy && i >0)
+	                            happy = curr == b.charAt(i-1);
+	                        if(!happy){
+	                            happybug=false;
+	                            break;
+	                        }
+	                    }
+	                }
+	                System.out.println(happybug?"YES":"NO");
+	            }
 
-		int numCases = in.nextInt();
-
-		for(int i = 0; i < numCases; i++) {
-			int arraySize = in.nextInt();
-			
-			HashMap<Character, Integer> wordCount = new HashMap();
-			
-			String bugArray = in.next();
-			boolean hasUnderscore = false;
-			for(int a_i = 0; a_i < arraySize; a_i++) {
-				char bugLetter = bugArray.charAt(a_i);
-				if(bugLetter == '_') {
-					hasUnderscore = true;
-				}
-				int letterCount = (wordCount.get(bugLetter) == null) ? 0 : wordCount.get(bugLetter);
-				wordCount.put(bugLetter, ++letterCount);
-			} //end for a_i
-			
-			boolean canBeHappy = true;
-			if(!hasUnderscore) {
-				canBeHappy = isSame(bugArray);
-			} else {
-				for(char letter: wordCount.keySet()) {
-					if(letter != '_') {
-						int count = wordCount.get(letter);
-						if(count < 2) {
-							canBeHappy = false;
-							break;
-						}
-					}
-				}
-			}
-			
-			String output = "NO";
-			if(canBeHappy) output = "YES";
-			
-			System.out.println(output);
-			
-		} //end for i
+	    }
 		
 		in.close();
 	}
