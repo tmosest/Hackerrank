@@ -47,7 +47,11 @@ public class HackerlandRadioTransmitters {
 								if(!housesAreCovered[j]) {
 									if(debugMode) 
 										System.out.println("Previous House Uncovered " + j + " at: " + houses[j]);
-									placeAtenaHere = true;
+									if(Math.abs(houses[i + 1] - houses[j]) > atenaRanage) {
+										if(debugMode) 
+											System.out.println("Previous House will be uncovered with next move" + j + " at: " + houses[j]);
+										placeAtenaHere = true;
+									}
 									break;
 								}
 							} // end for j
