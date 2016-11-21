@@ -10,6 +10,8 @@ import java.util.Scanner;
 public class HackerlandRadioTransmitters {
 
 	public static void main(String[] args) {
+		boolean debugMode = false;
+		
 		Scanner in = new Scanner(System.in);
 		
 		int numberOfHouses = in.nextInt();
@@ -22,13 +24,17 @@ public class HackerlandRadioTransmitters {
 		
 		Arrays.sort(houses);
 		
+		if(debugMode) 
+			printArray(houses);
+		
 		boolean[] housesAreCovered = new boolean[numberOfHouses];
 		int numberOfAtenas = 0;
 		
 		for(int i = 0; i < numberOfHouses; i++) {
 			boolean placeAtenaHere = false;
 			//Check if the house already has an radio transmitter
-			//System.out.println("Checking house: " + i);
+			if(debugMode) 
+				System.out.println("Checking house: " + i + " at: " + houses[i]);
 			if(!housesAreCovered[i]) {
 				//Make sure we aren't looking at the last house
 				if(i != numberOfHouses - 1) {
@@ -39,12 +45,15 @@ public class HackerlandRadioTransmitters {
 						if(i != 0) {
 							for(int j = 0; j < i; j++) {
 								if(!housesAreCovered[j]) {
-									//System.out.println("Previous House Uncovered " + j);
+									if(debugMode) 
+										System.out.println("Previous House Uncovered " + j + " at: " + houses[j]);
 									placeAtenaHere = true;
 									break;
 								}
 							} // end for j
 						}
+					} else {
+						placeAtenaHere = true;
 					}
 				} else {
 					//If last house isn't covered then place one there.
@@ -58,7 +67,8 @@ public class HackerlandRadioTransmitters {
 				for(int j = 0; j < numberOfHouses; j++) {
 					if(Math.abs(houses[j] - houses[i]) <= atenaRanage) {
 						housesAreCovered[j] = true;
-						//System.out.println("House "+ j +" now covered");
+						if(debugMode)
+							System.out.println("House "+ j +" now covered at " + houses[j]);
 					}
 				} // end for j
 			}
@@ -69,5 +79,10 @@ public class HackerlandRadioTransmitters {
 		in.close();
 	}
 
-	
+	public static void printArray(int[] array) {
+		for(int i = 0; i < array.length; i++) {
+			System.out.print(array[i] + " ");
+		}
+		System.out.println("");
+	}
 }
