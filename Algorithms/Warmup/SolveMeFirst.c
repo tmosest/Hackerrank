@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 /**
- *	Algorithms -> Warmup -> SolveMeFirst
+ *	Algorithms -> Warmup -> Solve Me First
  *	Easy (Super Easy)
  */
 
