@@ -6,7 +6,7 @@ import java.util.PriorityQueue;
 import java.util.Scanner;
 
 /**
- *	Algorithms -> Sorting -> Find the Median
+ *	Algorithms -> Sorting -> Fraudulent Activity Notifications
  *	Medium
  */
 public class FraudulentActivityNotifications {
@@ -138,8 +138,7 @@ public class FraudulentActivityNotifications {
 	                upperQueue.add(num);
 	            else
 	                lowerQueue.add(num);
-	        //increment count
-	        count++;
+	    
 	        //balancing the heaps
 	        if(upperQueue.size()-lowerQueue.size()==2)
 	            lowerQueue.add(upperQueue.poll());
@@ -157,6 +156,8 @@ public class FraudulentActivityNotifications {
 				}
 			}
 			toRemove[count % numberOfDays] = num;
+			//increment count
+			 count++;
 			//System.out.println("toRemove[" + count % numberOfDays + "] set to " + num);
 			//System.out.println("");
 	        //printQues();
