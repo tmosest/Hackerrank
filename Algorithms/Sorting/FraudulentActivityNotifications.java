@@ -1,6 +1,8 @@
 package Sorting;
 
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 /**
@@ -10,108 +12,177 @@ import java.util.Scanner;
 public class FraudulentActivityNotifications {
 
 	public static void main(String[] args) {
+		boolean debugMode = false;
+		
 		Scanner in = new Scanner(System.in);
 		
 		int days = in.nextInt();
 		int daysNeeded = in.nextInt();
 		
-		int[] bankingTransactions = new int[days];
+		RunningMedian runningMedian = new RunningMedianWithDayLimits(daysNeeded);
 		
+		int[] bankTransactions = new int[days];
 		for(int i = 0; i < days; i++) {
-			bankingTransactions[i] = in.nextInt();
+			bankTransactions[i] = in.nextInt();
+			if(debugMode) 
+				System.out.println("Added transacion: " + i + " : " + bankTransactions[i]);
 		}
+		
 		in.close();
 		
-		int notifications = calculateBankingNotifications(bankingTransactions, daysNeeded);
-		System.out.println(notifications);
-	}
-	
-	public static int calculateBankingNotifications(int[] array, int daysNeeded)
-	{
-		int notifications = 0;
+		int notification = 0;
+		if(debugMode) 
+			System.out.println("Set nofitications to zero");
 		
-		for(int i = 0; i < array.length; i++) {
-			if(i > daysNeeded - 1) {
-				double median = calculateMedianOfSubArray(array, i - daysNeeded, i);
-				//System.out.println("Median: " + median);
-				double notificationThreshold = median * 2;
-				//System.out.println("Notification Threshold: " + notificationThreshold);
-				if(array[i] >= notificationThreshold) {
-					notifications++;
+		for(int i = 0; i < days - 1; i++) {
+			double median = runningMedian.getMedian(bankTransactions[i]);
+			if(debugMode) 
+				System.out.println("median for day " + i + " : " + median);
+			if(i >= daysNeeded - 1) {
+				double threshold = median * 2;
+				if(debugMode) { 
+					System.out.println("Threshold for day " + i + " : " + threshold);
+					System.out.println("Checking against: " + bankTransactions[i + 1]);
+				}
+				if(bankTransactions[i + 1] >= threshold) {
+					notification++;
 				}
 			}
 		}
 		
-		return notifications;
+		System.out.println(notification);
 	}
 	
-	public static double calculateMedianOfSubArray(int[] array, int start, int end) 
+	// start class RunningMedian
+	private static class RunningMedian
 	{
-		int[] subArray = new int[end - start]; 
-		for(int i = start; i < end; i++) {
-			subArray[i - start] = array[i];
-			//System.out.print(subArray[i - start] + " ");
-		}
-		double median = calculateMeidan(subArray);
-		return median;
-	}
-	
-	public static double calculateMeidan(int[] array) 
-	{
-		int arraySize = array.length;
-		double median = 0;
-		if(arraySize % 2 == 1) {
-			median = (double) selectIterative(array, arraySize/2);
-		} else {
-			median =  (double) ( selectIterative(array, arraySize/2) + selectIterative(array, arraySize/2 - 1) ) / 2;
-		}
-		return median;
-	}
-	
-	public static int selectIterative(int[] array, int n) {
-		return iterative(array, 0, array.length - 1, n);
-	}
-	
-  	public static int iterative(int[] array, int left, int right, int n) {
-  		if(left == right) {
-  			return array[left];
-  		}
-  		
-  		for(;;) {
-  			int pivotIndex = randomPivot(left, right);
-  			pivotIndex = partition(array, left, right, pivotIndex);
-  			
-  			if(n == pivotIndex) {
-  				return array[n];
-  			} else if(n < pivotIndex) {
-  				right = pivotIndex - 1;
-  			} else {
-  				left = pivotIndex + 1;
-  			}
-  		}
-	}
-  	
-  	private static int partition(int[] array, int left, int right, int pivotIndex) {
-		int pivotValue = array[pivotIndex];
-		swap(array, pivotIndex, right); // move pivot to end
-		int storeIndex = left;
-		for(int i = left; i < right; i++) {
-			if(array[i] < pivotValue) {
-				swap(array, storeIndex, i);
-				storeIndex++;
-			}
-		}
-		swap(array, right, storeIndex); // Move pivot to its final place
-		return storeIndex;
-	}
-	
-	private static void swap(int[] array, int a, int b) {
-		int tmp = array[a];
-		array[a] = array[b];
-		array[b] = tmp;
-	}
+		PriorityQueue<Integer> upperQueue;
+	    PriorityQueue<Integer> lowerQueue;
 
-	private static int randomPivot(int left, int right) {
-		return left + (int) Math.floor(Math.random() * (right - left + 1));
-	}	
+	    public RunningMedian()
+	    {
+	        lowerQueue=new PriorityQueue<Integer>(
+	          20,new Comparator<Integer>()
+	        {
+
+	            @Override
+	            public int compare(Integer o1, Integer o2)
+	            {
+
+	                return -o1.compareTo(o2);
+	            }
+
+	        });
+	        upperQueue=new PriorityQueue<Integer>();
+	        upperQueue.add(Integer.MAX_VALUE);
+	        lowerQueue.add(Integer.MIN_VALUE);
+	    }
+	    
+	    public double getMedian(int num)
+	    {
+	        //adding the number to proper heap
+	            if(num>=upperQueue.peek())
+	                upperQueue.add(num);
+	            else
+	                lowerQueue.add(num);
+	        //balancing the heaps
+	        if(upperQueue.size()-lowerQueue.size()==2)
+	            lowerQueue.add(upperQueue.poll());
+	        else if(lowerQueue.size()-upperQueue.size()==2)
+	            upperQueue.add(lowerQueue.poll());
+	        //returning the median
+	        if(upperQueue.size()==lowerQueue.size())
+	            return(upperQueue.peek()+lowerQueue.peek())/2.0;
+	        else if(upperQueue.size()>lowerQueue.size())
+	            return upperQueue.peek();
+	        else
+	            return lowerQueue.peek();
+
+	    }
+	} //end class RunningMedian
+	
+	// start class RunningMedian with day limits
+	private static class RunningMedianWithDayLimits extends RunningMedian
+	{
+		private int count = 0;
+		private int numberOfDays = 0;
+		private int[] toRemove;
+		
+		public RunningMedianWithDayLimits(int numberOfDays)
+	    {
+			this.numberOfDays = numberOfDays;
+			toRemove = new int[numberOfDays];
+			
+	        lowerQueue=new PriorityQueue<Integer>(
+	          20,new Comparator<Integer>()
+	        {
+
+	            @Override
+	            public int compare(Integer o1, Integer o2)
+	            {
+
+	                return -o1.compareTo(o2);
+	            }
+
+	        });
+	        upperQueue=new PriorityQueue<Integer>();
+	        upperQueue.add(Integer.MAX_VALUE);
+	        lowerQueue.add(Integer.MIN_VALUE);
+	    }
+		
+		public double getMedian(int num)
+	    {
+			//System.out.println("On day " + (1 + count));
+	        //adding the number to proper heap
+	            if(num>=upperQueue.peek())
+	                upperQueue.add(num);
+	            else
+	                lowerQueue.add(num);
+	        //increment count
+	        count++;
+	        //balancing the heaps
+	        if(upperQueue.size()-lowerQueue.size()==2)
+	            lowerQueue.add(upperQueue.poll());
+	        else if(lowerQueue.size()-upperQueue.size()==2)
+	            upperQueue.add(lowerQueue.poll());
+	        //remove elements if needed
+	        if(count > numberOfDays - 1) {
+				if(count != 0) {
+					int indexToRemove = (count) % numberOfDays;
+					//System.out.println("Removing toRemove[" + indexToRemove +"] : " + toRemove[indexToRemove]);
+					if(toRemove[indexToRemove]>=upperQueue.peek())
+		                upperQueue.remove(toRemove[indexToRemove]);
+		            else
+		                lowerQueue.remove(toRemove[indexToRemove]);
+				}
+			}
+			toRemove[count % numberOfDays] = num;
+			//System.out.println("toRemove[" + count % numberOfDays + "] set to " + num);
+			//System.out.println("");
+	        //printQues();
+	        //returning the median
+	        if(upperQueue.size()==lowerQueue.size())
+	            return(upperQueue.peek()+lowerQueue.peek())/2.0;
+	        else if(upperQueue.size()>lowerQueue.size())
+	            return upperQueue.peek();
+	        else
+	            return lowerQueue.peek();
+
+	    }
+		
+		public void printQues() 
+		{
+			System.out.println("Lower");
+			for(int num : lowerQueue) {
+				System.out.print(num + " ");
+			}
+			System.out.println("");
+			System.out.println("Upper");
+			for(int num : upperQueue) {
+				System.out.print(num + " ");
+			}
+			System.out.println("");
+		}
+	}
+	// end class RunningMedian with day limits
 }
