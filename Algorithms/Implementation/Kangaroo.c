@@ -19,7 +19,7 @@ struct Kangaroo {
 /*
  * Function declaration
  */
-int willSecondKangarooCatchTheFirst(struct Kangaroo k1, struct Kangaroo k2)
+int willSecondKangarooCatchTheFirst(struct Kangaroo k1, struct Kangaroo k2);
 
 /*
  * Main
