@@ -8,7 +8,7 @@
 
 /**
  *	Algorithms -> Warmup -> A Very Big Sum
- *	Easy (Super Easy)
+ *	Easy
  */
 int main(){
 	long long a, b, c, d, e;
