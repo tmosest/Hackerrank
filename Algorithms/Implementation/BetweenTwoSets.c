@@ -7,7 +7,7 @@
 #include <stdbool.h>
 
 /**
- *	Algorithms -> Warmup -> Between Two Sets
+ *	Algorithms -> Implementation -> Between Two Sets
  *	Easy
  */
 

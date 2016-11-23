@@ -7,7 +7,7 @@
 #include <stdbool.h>
 
 /**
- *	Algorithms -> Warmup -> Designer PDF Viewer
+ *	Algorithms -> Implementation -> Designer PDF Viewer
  *	Easy
  */
 int main(){

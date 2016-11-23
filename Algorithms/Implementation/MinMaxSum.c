@@ -7,7 +7,7 @@
 #include <stdbool.h>
 
 /**
- *	Algorithms -> Warmup -> A Very Big Sum
+ *	Algorithms -> Implementation -> A Very Big Sum
  *	Easy
  */
 int main(){

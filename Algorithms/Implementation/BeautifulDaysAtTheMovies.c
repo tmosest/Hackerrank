@@ -7,7 +7,7 @@
 #include <stdbool.h>
 
 /**
- *	Algorithms -> Warmup -> Beautiful Days at the Movies
+ *	Algorithms -> Implementation -> Beautiful Days at the Movies
  *	Easy
  */
 

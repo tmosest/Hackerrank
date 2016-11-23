@@ -7,7 +7,7 @@
 #include <stdbool.h>
 
 /**
- *	Algorithms -> Warmup -> Apple and Orange
+ *	Algorithms -> Implementation -> Apple and Orange
  *	Easy
  */
 int main(){

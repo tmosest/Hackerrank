@@ -7,7 +7,7 @@
 #include <stdbool.h>
 
 /**
- *	Algorithms -> Warmup -> Kangaroo
+ *	Algorithms -> Implementation -> Kangaroo
  *	Easy
  */
 
