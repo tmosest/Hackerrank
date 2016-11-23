@@ -59,7 +59,7 @@ public class BetweenTwoSets {
 		
 		int counter = 0;
 		for(int i = lcmA; i <= gcdB; i++) {
-			if(isFactor(gcdB, i)) {
+			if(isFactor(gcdB, i) && isFactor(i, lcmA)) {
 				counter++;
 				//System.out.println(i);
 			}
