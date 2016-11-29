@@ -1,26 +1,27 @@
 package Sorting;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.PriorityQueue;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 /**
  *	Algorithms -> Sorting -> Fraudulent Activity Notifications
  *	Medium
  */
 public class FraudulentActivityNotifications {
-
+	
+	static boolean debugMode;
+	
 	public static void main(String[] args) {
-		boolean debugMode = false;
+		
+		debugMode = false;
 		
 		Scanner in = new Scanner(System.in);
 		
 		int days = in.nextInt();
 		int daysNeeded = in.nextInt();
 		
-		RunningMedian runningMedian = new RunningMedianWithDayLimits(daysNeeded);
-		
+		CountMedianCalculator cmc = new CountMedianCalculator(daysNeeded);
+				
 		int[] bankTransactions = new int[days];
 		for(int i = 0; i < days; i++) {
 			bankTransactions[i] = in.nextInt();
@@ -33,157 +34,105 @@ public class FraudulentActivityNotifications {
 		int notification = 0;
 		if(debugMode) 
 			System.out.println("Set nofitications to zero");
-		
 		for(int i = 0; i < days - 1; i++) {
-			double median = runningMedian.getMedian(bankTransactions[i]);
-			if(debugMode) 
-				System.out.println("median for day " + i + " : " + median);
-			if(i >= daysNeeded - 1) {
-				double threshold = median * 2;
-				if(debugMode) { 
-					System.out.println("Threshold for day " + i + " : " + threshold);
-					System.out.println("Checking against: " + bankTransactions[i + 1]);
-				}
-				if(bankTransactions[i + 1] >= threshold) {
-					notification++;
-				}
-			}
-		}
-		
+            double median = cmc.getMedian(bankTransactions[i]);
+            if(debugMode) 
+				System.out.println("median for day " + (i + 1) + " : " + median);
+            if(i >= daysNeeded - 1) {
+                if(debugMode) 
+				    System.out.println("Compairing " + (2 * median) + " to day " + (i + 2) + " : " + bankTransactions[i + 1]);
+                if(bankTransactions[i + 1] >= 2 * median) {
+                   notification += 1; 
+                   if(debugMode) 
+				    System.out.println("Notification increased on day " + (i + 2));
+                }
+            }
+        }
 		System.out.println(notification);
 	}
 	
-	// start class RunningMedian
-	private static class RunningMedian
+	private static class CountMedianCalculator
 	{
-		PriorityQueue<Integer> upperQueue;
-	    PriorityQueue<Integer> lowerQueue;
-
-	    public RunningMedian()
-	    {
-	        lowerQueue=new PriorityQueue<Integer>(
-	          20,new Comparator<Integer>()
-	        {
-
-	            @Override
-	            public int compare(Integer o1, Integer o2)
-	            {
-
-	                return -o1.compareTo(o2);
-	            }
-
-	        });
-	        upperQueue=new PriorityQueue<Integer>();
-	        upperQueue.add(Integer.MAX_VALUE);
-	        lowerQueue.add(Integer.MIN_VALUE);
-	    }
-	    
-	    public double getMedian(int num)
-	    {
-	        //adding the number to proper heap
-	            if(num>=upperQueue.peek())
-	                upperQueue.add(num);
-	            else
-	                lowerQueue.add(num);
-	        //balancing the heaps
-	        if(upperQueue.size()-lowerQueue.size()==2)
-	            lowerQueue.add(upperQueue.poll());
-	        else if(lowerQueue.size()-upperQueue.size()==2)
-	            upperQueue.add(lowerQueue.poll());
-	        //returning the median
-	        if(upperQueue.size()==lowerQueue.size())
-	            return(upperQueue.peek()+lowerQueue.peek())/2.0;
-	        else if(upperQueue.size()>lowerQueue.size())
-	            return upperQueue.peek();
-	        else
-	            return lowerQueue.peek();
-
-	    }
-	} //end class RunningMedian
-	
-	// start class RunningMedian with day limits
-	private static class RunningMedianWithDayLimits extends RunningMedian
-	{
-		private int count = 0;
-		private int numberOfDays = 0;
-		private int[] toRemove;
+		private int count;
+		private int limit;
+		private TreeMap<Integer, Integer> numberFrequencies;
+		private int[] daysArray;
+		private boolean hasEvenDays;
+		private int medianIndex;
 		
-		public RunningMedianWithDayLimits(int numberOfDays)
-	    {
-			this.numberOfDays = numberOfDays;
-			toRemove = new int[numberOfDays];
+		public CountMedianCalculator(int days)
+		{
+			this.limit = days;
+			this.count = 0;
+			this.numberFrequencies = new TreeMap<Integer, Integer>();
+			this.daysArray = new int[days];
+			this.hasEvenDays = days % 2 == 0;
+			this.medianIndex = (days - 1) / 2;
+		}
+		
+		/*
+		 * Calculate the new median after adding the new number and removing an old number if needed.
+		 */
+		public double getMedian(int number) {
+			double median = 0;
 			
-	        lowerQueue=new PriorityQueue<Integer>(
-	          20,new Comparator<Integer>()
-	        {
-
-	            @Override
-	            public int compare(Integer o1, Integer o2)
-	            {
-
-	                return -o1.compareTo(o2);
-	            }
-
-	        });
-	        upperQueue=new PriorityQueue<Integer>();
-	        upperQueue.add(Integer.MAX_VALUE);
-	        lowerQueue.add(Integer.MIN_VALUE);
-	    }
-		
-		public double getMedian(int num)
-	    {
-			//System.out.println("On day " + (1 + count));
-	        //adding the number to proper heap
-	            if(num>=upperQueue.peek())
-	                upperQueue.add(num);
-	            else
-	                lowerQueue.add(num);
-	    
-	        //balancing the heaps
-	        if(upperQueue.size()-lowerQueue.size()==2)
-	            lowerQueue.add(upperQueue.poll());
-	        else if(lowerQueue.size()-upperQueue.size()==2)
-	            upperQueue.add(lowerQueue.poll());
-	        //remove elements if needed
-	        if(count > numberOfDays - 1) {
-				if(count != 0) {
-					int indexToRemove = (count) % numberOfDays;
-					//System.out.println("Removing toRemove[" + indexToRemove +"] : " + toRemove[indexToRemove]);
-					if(toRemove[indexToRemove]>=upperQueue.peek())
-		                upperQueue.remove(toRemove[indexToRemove]);
-		            else
-		                lowerQueue.remove(toRemove[indexToRemove]);
+			int daysArrayIndex = this.count % this.limit;
+			
+			//Check to see If I need to remove a number
+			if(this.count >= this.limit) {
+				//get frequency
+				int numberCount = this.numberFrequencies.get(this.daysArray[daysArrayIndex]);
+				this.numberFrequencies.put(this.daysArray[daysArrayIndex], --numberCount);
+			}
+			
+			//Set the new number slot for to remove
+			this.daysArray[daysArrayIndex] = number;
+			
+			//Update number frequency for new number
+			int numberCount = (this.numberFrequencies.get(number) == null) ? 0 : this.numberFrequencies.get(number);
+			this.numberFrequencies.put(number, ++numberCount);
+			
+			//Actually Calculate the Median
+			if(this.count >= this.limit - 1) {
+				if(this.hasEvenDays) {
+					int medianCount = 0;
+					boolean needsNext = false;
+					for(int num : this.numberFrequencies.keySet()) {
+						medianCount += this.numberFrequencies.get(num);
+						
+						if(medianCount >= medianIndex && medianCount <= medianIndex + 1) {
+							needsNext = true;
+							median = (double) num;
+						}
+						
+						if(medianCount > medianIndex + 1) {
+							median += (double) num;
+							break;
+						}
+						
+					}
+					if(needsNext) {
+						median /= 2.0;
+					}
+				} else {
+					int medianCount = 0;
+					for(int num : this.numberFrequencies.keySet()) {
+						medianCount += this.numberFrequencies.get(num);
+						if(debugMode)
+							System.out.println(num + " : " + this.numberFrequencies.get(num));
+						if(medianCount > medianIndex) {
+							median = (double) num;
+							break;
+						}
+					}
 				}
 			}
-			toRemove[count % numberOfDays] = num;
+			
 			//increment count
-			 count++;
-			//System.out.println("toRemove[" + count % numberOfDays + "] set to " + num);
-			//System.out.println("");
-	        //printQues();
-	        //returning the median
-	        if(upperQueue.size()==lowerQueue.size())
-	            return(upperQueue.peek()+lowerQueue.peek())/2.0;
-	        else if(upperQueue.size()>lowerQueue.size())
-	            return upperQueue.peek();
-	        else
-	            return lowerQueue.peek();
-
-	    }
+			this.count += 1;
+			
+			return median;
+		} //end getMedian
 		
-		public void printQues() 
-		{
-			System.out.println("Lower");
-			for(int num : lowerQueue) {
-				System.out.print(num + " ");
-			}
-			System.out.println("");
-			System.out.println("Upper");
-			for(int num : upperQueue) {
-				System.out.print(num + " ");
-			}
-			System.out.println("");
-		}
 	}
-	// end class RunningMedian with day limits
 }
