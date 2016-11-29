@@ -3,7 +3,7 @@ package WeekOfCode.Week26;
 import java.util.Scanner;
 
 /**
- *	Algorithms -> Week of Code 25 -> Append and Delete 
+ *	Algorithms -> Week of Code 26 -> Append and Delete 
  *	Easy
  */
 public class ArmyGame {
