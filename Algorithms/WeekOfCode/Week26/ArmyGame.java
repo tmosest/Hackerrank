@@ -1,5 +1,6 @@
 package WeekOfCode.Week26;
 
+
 import java.util.Scanner;
 
 /**
@@ -30,11 +31,19 @@ public class ArmyGame {
 		} else if(columns <= 2) { 
 			dropsNeeded = rows / 2 + rows % 2;
 		} else {
-			dropsNeeded = (rows / 2 + rows % 2) + (columns / 2 + columns % 2);
+			
+			int rowsHalfed = rows / 2;
+			int columnsHalfed = columns / 2;
+			
+			int oddArea = rows * columns - (rowsHalfed * 2) * (columnsHalfed * 2);
+			
+            //System.out.println("oddAread: " + oddArea);
+            
+			int suppliesForOddArea = oddArea / 2 + oddArea % 2;
+			
+			dropsNeeded = (rows / 2) + (columns / 2) + suppliesForOddArea;
 		}
 		
 		return dropsNeeded;
 	}
 }
-
-
