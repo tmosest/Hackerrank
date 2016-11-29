@@ -95,36 +95,11 @@ public class FraudulentActivityNotifications {
 			//Actually Calculate the Median
 			if(this.count >= this.limit - 1) {
 				if(this.hasEvenDays) {
-					int medianCount = 0;
-					boolean needsNext = false;
-					for(int num : this.numberFrequencies.keySet()) {
-						medianCount += this.numberFrequencies.get(num);
-						
-						if(medianCount >= medianIndex && medianCount <= medianIndex + 1) {
-							needsNext = true;
-							median = (double) num;
-						}
-						
-						if(medianCount > medianIndex + 1) {
-							median += (double) num;
-							break;
-						}
-						
-					}
-					if(needsNext) {
-						median /= 2.0;
-					}
+					median = find(medianIndex);
+					median += find(medianIndex + 1);
+					median /= 2;
 				} else {
-					int medianCount = 0;
-					for(int num : this.numberFrequencies.keySet()) {
-						medianCount += this.numberFrequencies.get(num);
-						if(debugMode)
-							System.out.println(num + " : " + this.numberFrequencies.get(num));
-						if(medianCount > medianIndex) {
-							median = (double) num;
-							break;
-						}
-					}
+					median = find(medianIndex);
 				}
 			}
 			
@@ -134,5 +109,22 @@ public class FraudulentActivityNotifications {
 			return median;
 		} //end getMedian
 		
+		private double find(int idx) 
+		{
+			double found = 0;
+			int medianCount = 0;
+			
+			for(int num : this.numberFrequencies.keySet()) {
+				medianCount += this.numberFrequencies.get(num);
+				if(debugMode)
+					System.out.println(num + " : " + this.numberFrequencies.get(num));
+				if(medianCount > idx) {
+					found = (double) num;
+					break;
+				}
+			}
+			
+			return found;
+		}
 	}
 }
