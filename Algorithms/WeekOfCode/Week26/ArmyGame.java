@@ -1,6 +1,5 @@
 package WeekOfCode.Week26;
 
-
 import java.util.Scanner;
 
 /**
@@ -41,7 +40,7 @@ public class ArmyGame {
             
 			int suppliesForOddArea = oddArea / 2 + oddArea % 2;
 			
-			dropsNeeded = (rows / 2) + (columns / 2) + suppliesForOddArea;
+			dropsNeeded = (rows / 2) * (columns / 2) + suppliesForOddArea;
 		}
 		
 		return dropsNeeded;
