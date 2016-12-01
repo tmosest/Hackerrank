@@ -8,25 +8,34 @@ import java.util.Scanner;
  *	Medium
  */
 public class Twins {
+	static public boolean[] usedPrimes;
+	static public int start;
+	static public int end;
+    static public boolean debugMode;
 	
 	public static void main(String[] args) {
+        debugMode = false;
 		Scanner in = new Scanner(System.in);
-		int start = in.nextInt();
-        int end = in.nextInt();
+		start = in.nextInt();
+        end = in.nextInt();
 		in.close();
-        int twins = countAllTwinPrimesBetween(start, end);
+        int twins = countAllTwinPrimes();
         System.out.println(twins);
 	}
 	
-	// will contain true or false values for the first 10,000 integers
-	static boolean[] primes;
-	public static int countAllTwinPrimesBetween(int start, int end)
+	public static int countAllTwinPrimes()
 	{
-		primes = new boolean[end + 1];
+		if(start < 2) {
+			start = 2;
+		}
+		usedPrimes = new boolean[end - start + 1];
+		
 		fillSieve();
         
 		int count = 0;
-        for(int i = start; i <= end - 2; i++) {
+        for(int i = 0; i < usedPrimes.length - 2; i++) {
+            if(debugMode)
+                System.out.println((i + start) + " isPrime: " + isPrime(i));
             if(isPrime(i)) {
                 if(isPrime(i + 2)) {
                     count += 1;
@@ -38,21 +47,57 @@ public class Twins {
 	
 	//set up the primesieve
 	static public void fillSieve() {
-	    Arrays.fill(primes,true);        // assume all integers are prime.
-	    primes[0]=primes[1]=false;       // we know 0 and 1 are not prime.
-	    for (int i=2;i<primes.length;i++) {
+        boolean[] unUsedPrimes = new boolean[start];
+        
+	    Arrays.fill(usedPrimes, true);        // assume all integers are prime.
+	    Arrays.fill(unUsedPrimes, true); 
+	    
+	    unUsedPrimes[0]=unUsedPrimes[1]=false;       // we know 0 and 1 are not prime.
+	    
+	    for (int i= 2; i< unUsedPrimes.length; i++) {
 	        //if the number is prime,
 	        //then go through all its multiples and make their values false.
-	        if(primes[i]) {
-	            for (int j=2;i*j<primes.length;j++) {
-	                primes[i*j]=false;
+	        if(unUsedPrimes[i]) {
+                if(debugMode)
+                    System.out.println("Prime: " + i);
+	            for (int j = 2; i * j < unUsedPrimes.length; j++) {
+	            	unUsedPrimes[i * j] = false;
+	            }
+	            for(int j = 0; j < usedPrimes.length; j++) {
+	            	int index = start + j;
+                    if(debugMode)
+                        System.out.println(index + " % " + i);
+	            	if(index % i == 0) {
+	            		usedPrimes[j] = false;
+                        if(debugMode)
+                            System.out.println("Setting: " + j + " to false");
+	            	}
 	            }
 	        }
+	    }
+	    
+        unUsedPrimes = null;
+        
+	    for(int i = 0; i < usedPrimes.length - 1; i++) {
+	    	if(usedPrimes[i]) {
+	    		int prime = i + start;
+                if(debugMode)
+                    System.out.println("Prime: " + prime);
+	    		for(int j = i + 1; j < usedPrimes.length; j++) {
+	            	int index = start + j;
+                    if(debugMode)
+                        System.out.println(index + " % " + prime);
+	            	if(index % prime == 0) {
+	            		usedPrimes[j] = false;
+                        if(debugMode)
+                            System.out.println("Setting: " + j + " to false");
+	            	}
+	            }
+	    	}
 	    }
 	}
 
 	static public boolean isPrime(int n) {
-	    return primes[n]; //simple, huh?
+	    return usedPrimes[n]; //simple, huh?
 	}
 }
-
