@@ -13,15 +13,13 @@ public class LilysHomework {
 	public static Pair[] sortedCycleTracker, reversedSortedCycleTracker;
 	
 	public static void main(String[] args) {
-        boolean debugMode = true;
+        boolean debugMode = false;
 
 		Scanner in = new Scanner(System.in);
 		
 		int arraySize = in.nextInt();
 		
 		int[] array = new int[arraySize];
-		int[] sortedArray = new int[arraySize];
-		int[] reversedArray = new int[arraySize];
 		
 		used = new boolean[arraySize];
 		sortedCycleTracker = new Pair[arraySize];
@@ -29,7 +27,6 @@ public class LilysHomework {
 
 		for(int i = 0; i < arraySize; i++) {
 			array[i] = in.nextInt();
-			sortedArray[i] = array[i];
 			sortedCycleTracker[i] = new Pair(array[i], i);
 			reversedSortedCycleTracker[i] = new Pair(array[i], i);
 			used[i] = false;
@@ -64,11 +61,14 @@ public class LilysHomework {
 	        }
 		}
 		
+        swaps = arraySize - swaps;
+        reversedSwaps = arraySize - reversedSwaps;
+        
 		if(debugMode) {
             System.out.println("swap: " + swaps);
             System.out.println("reversedSwaps: " + reversedSwaps);
         }
-		
+        
 		int minSwaps = Math.min(swaps, reversedSwaps);
 		
 		System.out.println(minSwaps);
