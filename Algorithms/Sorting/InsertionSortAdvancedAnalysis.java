@@ -13,7 +13,7 @@ public class InsertionSortAdvancedAnalysis {
     
 	public static void main(String[] args) {
         
-        debugMode = true;
+        debugMode = false;
         
 		Scanner in = new Scanner(System.in);
 		
@@ -29,7 +29,7 @@ public class InsertionSortAdvancedAnalysis {
             }
             
 			count = 0;
-			m_sort(array, 0, array.length - 1);
+			count = inversions(array);
 			System.out.println(count);
 			
 		}
@@ -37,65 +37,56 @@ public class InsertionSortAdvancedAnalysis {
 		in.close();
 	}
 	
-	public static void merge(int[] a, int i, int j)
-	{
-		int ni = ((i + j) / 2) + 1;
-		int nj = j + 1;
-		int s = 1;
+	public static int inversions(int [] arr) {
+		int ans = 0;
 		
-        if(debugMode) {
-            System.out.println("ni " + ni);
-            System.out.println("nj " + nj);
-        }
-        
-		int arr[] = new int[nj];
+		int n = arr.length;
 		
-		j = ni;
+		if(n == 1)
+			return 0;
 		
-		int k = 0;
+		int n1 = n /2;
+		int n2 = n - n1;
 		
-		while(i < ni && j < nj) {
-            if(debugMode)
-			 System.out.println("a[" + i + "] " + a[i] + " a[" + j + "] " + a[j]);
-			if(a[i] <= a[j]) {
-	            arr[k] = a[i];
-                if(debugMode)
-			      System.out.println("arr[" + k + "]  = " + a[k]);
-	            i++;
-	        }
-	        else {
-	            arr[k] = a[j];
-	            count += (ni - i);
-                if(debugMode)
-                    System.out.println("count: " + count);
-	            j++;
-	        }
-	        k++;
-	        
-		} //end while
+		int[] arr1 = new int[n1];
 		
-		for( ; i < ni; i++ , k++) {
-	        arr[k] = a[i];
-		}
-	    
-		for( ; j < nj; j++, k++) {
-	        arr[k] = a[j];
+		for(int i = 0; i < n1; i++) {
+			arr1[i] = arr[i];
+			if(debugMode) 
+				System.out.print(arr1[i] + " ");
 		}
 		
-	    for(k = 0; s < nj; s++, k++) {
-	        a[s] = arr[k];
-            if(debugMode)
-                System.out.println("a[" + s +"] = " + a[s]);
-	    }
-	}// end void merge
-	
-	public static void m_sort(int[] a, int i, int j)
-	{
-		if(i < j) {
-	        m_sort(a, i, (i + j)/2);
-	        m_sort(a, ((i + j) / 2) + 1, j);
-	        merge(a,i,j);
-	    }
+		if(debugMode) 
+			System.out.println("");
+		
+		int[] arr2 = new int[n2];
+		
+		for(int i = 0; i < n2; i++) {
+			arr2[i] = arr[n1 + i];
+			if(debugMode) 
+				System.out.print(arr2[i] + " ");
+		}
+		
+		if(debugMode) 
+			System.out.println("");
+		
+		ans = inversions(arr1) + inversions(arr2);
+		
+		int i1 = 0;
+		int i2 = 0;
+		
+		for(int i = 0; i < n; i++) {
+			if(i1 < n1 && ( i2 >= n2 || arr1[i1] <=arr2 [i2])) {
+	            arr[i] = arr1[i1];
+	            ans += i2;
+	            i1 += 1;
+			} else if(i2 < n2) {
+	            arr[i] = arr2[i2];
+	            i2 += 1;
+			}
+		}
+		
+		return ans;
 	}
 }
 
