@@ -29,7 +29,9 @@ public class MusicOnTheStreet {
 		
 		int timeLeft = miles - (stops[stops.length - 1] - stops[0]);
 		
-		int difference = timeLeft / 2;
+		if(timeLeft <= 0) throw new Error();
+		
+		int difference = (int) Math.ceil((double) timeLeft / 2);
 		
 		int startPoint = stops[0] - difference;
 		
