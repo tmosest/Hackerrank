@@ -12,9 +12,8 @@ import java.util.Scanner;
 public class Twins {
 	private static boolean debugMode;
 	
-	private static long start;
-	private static long end;
-	private static int twins;
+	private static long start, end;
+	private static int twins, seivetwins;
 	
 	static boolean[] primes;
 	
@@ -32,20 +31,23 @@ public class Twins {
         	System.out.println("Looking for primes between: " + start + " " + end);
         
         runEratosthenesSieve(start, end);
+        //countAllTwinPrimesBetween((int) start, (int) end);
         
+        //System.out.println(twins + " vs " + seivetwins);
         System.out.println(twins);
 	}
 	
 	// will contain true or false values for the first 10,000 integers
 	public static void countAllTwinPrimesBetween(int start, int end)
 	{
-		twins = 0;
+		seivetwins = 0;
 		primes = new boolean[end + 1];
 		fillSieve();
 	}
 	
 	//set up the primesieve
-	static public void fillSieve() {
+	static public void fillSieve() 
+	{
 		if(debugMode)
         	System.out.println("Filling Sieve");
 	    
@@ -80,8 +82,8 @@ public class Twins {
 	        	//Check for twin primes while filling seive
 	        	if(i >= start + 2) { 
 	        		if(primes[i - 2]) {
-	        			twins += 1;
-	        			if(debugMode)
+	        			seivetwins += 1;
+	        			if(debugMode && seivetwins == 1)
 	        				System.out.println("Twin Primes Found: (" + (i - 2) + ", " + i + ")");
 	        		}
 	        	}
@@ -94,7 +96,8 @@ public class Twins {
 	    }
 	}
 	
-	public static void runEratosthenesSieve(long lowerBound, long upperBound) {
+	public static void runEratosthenesSieve(long lowerBound, long upperBound) 
+	{
 
 	      long upperBoundSquareRoot = (long) Math.sqrt(upperBound);
 
@@ -105,14 +108,14 @@ public class Twins {
 	      isComposite.set(0);
 	      isComposite.set(1);
 	      
-	      for (int m = 2 /*int m = lowerBound*/; m <= upperBoundSquareRoot; m++) {
-
+	      for (int m = 3 /*int m = lowerBound*/; m <= upperBoundSquareRoot; m += 2) {
+	    	  
 	            if (!isComposite.get(m)) {
 
-	                if (m >= lowerBound) {
-	                	if(!isComposite.get(m - 2)) {
+	                if (m >= lowerBound + 2) {
+	                	if(!isComposite.get(m - 2) && m % 2 == 1) {
 	                		twins += 1;
-	                		if(debugMode)
+	                		if(debugMode && twins == 1)
 	                			System.out.println("Twin Primes Found: (" + (m - 2) + ", " + m + ")");
 	                	}
 	                	if(debugMode)
@@ -131,10 +134,10 @@ public class Twins {
 
 	            if (!isComposite.get(m))
 
-	                 if (m >= lowerBound) {
-	                	 if(!isComposite.get(m - 2)) {
+	                 if (m >= lowerBound + 2) {
+	                	 if(!isComposite.get(m - 2) && m % 2 == 1) {
 		                		twins += 1;
-		                		if(debugMode)
+		                		if(debugMode && twins == 1)
 		                			System.out.println("Twin Primes Found: (" + (m - 2) + ", " + m + ")");
 		                 }
 	                 }
