@@ -1,6 +1,8 @@
 package WeekOfCode.Week26;
 
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Scanner;
@@ -11,6 +13,8 @@ import java.util.Scanner;
  */
 public class Twins {
 	private static boolean debugMode;
+	private static boolean timeMode;
+	private static long startTime, endTime, totalTime;
 	
 	private static long start, end;
 	private static int twins, seivetwins;
@@ -19,6 +23,7 @@ public class Twins {
 	
 	public static void main(String[] args) {
 		debugMode = false;
+		timeMode = true;
 		
 		Scanner in = new Scanner(System.in);
 		
@@ -26,15 +31,25 @@ public class Twins {
         end = in.nextLong();
 		
         in.close();
-		
+        
         if(debugMode)
         	System.out.println("Looking for primes between: " + start + " " + end);
+        
+        if(timeMode)
+			startTime = System.currentTimeMillis();
         
         runEratosthenesSieve(start, end);
         //countAllTwinPrimesBetween((int) start, (int) end);
         
         //System.out.println(twins + " vs " + seivetwins);
         System.out.println(twins);
+        
+        if(timeMode) {
+        	endTime   = System.currentTimeMillis();
+        	totalTime = endTime - startTime;
+        	NumberFormat formatter = new DecimalFormat("#0.00000");
+        	System.out.print("Execution time is " + formatter.format((totalTime) / 1000d) + " seconds");
+        }
 	}
 	
 	// will contain true or false values for the first 10,000 integers
