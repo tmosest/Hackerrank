@@ -17,7 +17,7 @@ public class MaximumSubarraySum {
 		for(int t = 0; t < numCases; t++) {
 			
 			int arraySize = in.nextInt();
-			long mod = in.nextInt();
+			long mod = in.nextLong();
 			
 			long[] array = new long[arraySize];
 			
@@ -37,7 +37,7 @@ public class MaximumSubarraySum {
 
         Long maxSoFar = (numbers[numbers.length-1] + numbers[numbers.length-2])%mod;
         maxSoFar = (maxSoFar > (numbers[0]%mod)) ? maxSoFar : numbers[0]%mod;
-        numbers[0] %=mod;
+        numbers[0] %= mod;
         for (Long i = 1L; i < numbers.length; i++) {
             long currentNumber = numbers[i.intValue()]%mod;            
             maxSoFar = maxSoFar > currentNumber ? maxSoFar : currentNumber;
