@@ -121,7 +121,7 @@ public class SatisfactoryPairs {
 									freqXY.put(y, ++numFreq);
 								//}
 							}
-							//break;
+							break;
 						}
 					}// end for t				
 				} //end if
