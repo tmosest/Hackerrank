@@ -22,10 +22,10 @@ import java.util.Scanner;
 public class GridlandMetro {
 
 	private static class Tuple implements Comparator<Tuple>, Comparable<Tuple> {
-		public int x1;
-		public int x2;
+		public long x1;
+		public long x2;
 		
-		Tuple(int x, int y) {
+		Tuple(long x, long y) {
 			this.x1 = x;
 			this.x2 = y;
 		}
@@ -74,18 +74,18 @@ public class GridlandMetro {
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
 		
-		int rows = in.nextInt();
-		int columns = in.nextInt();
+		long rows = in.nextLong();
+		long columns = in.nextLong();
 		
-		int numTrainTracks = in.nextInt();
+		long numTrainTracks = in.nextLong();
 		
-		HashMap<Integer, ArrayList<Tuple>> tracks = new HashMap<Integer, ArrayList<Tuple>> ();
+		HashMap<Long, ArrayList<Tuple>> tracks = new HashMap<Long, ArrayList<Tuple>> ();
 		
 		for(int j = 0; j < numTrainTracks; j++) {
 			
-			int row = in.nextInt();
-			int start = in.nextInt();
-			int end = in.nextInt();
+			long row = in.nextLong();
+			long start = in.nextLong();
+			long end = in.nextLong();
 			
 			Tuple cordinates = new Tuple(start, end);
 			ArrayList<Tuple> track = tracks.get(row);
@@ -100,16 +100,27 @@ public class GridlandMetro {
 		
         in.close();
         
-		int numLamps = rows * columns;
-		int gridPoints = 0;
+        long numLamps = rows * columns;
+        long gridPoints = 0;
 		
-		for(int row : tracks.keySet()) {
+		for(long row : tracks.keySet()) {
 			ArrayList<Tuple> temp = tracks.get(row);
+			/*
+			for(Tuple t: temp) {
+				System.out.print("(" + t.x1 + ", " + t.x2 + ") ");
+			}
+			System.out.println("");
+			*/
 			Collections.sort(temp);
-			
-			int begin = temp.get(0).x1;
-			int end = temp.get(0).x2;
-			int points = 0;
+			/*
+			for(Tuple t: temp) {
+				System.out.print("(" + t.x1 + ", " + t.x2 + ") ");
+			}
+			System.out.println("");
+			*/
+			long begin = temp.get(0).x1;
+			long end = temp.get(0).x2;
+			long points = 0;
 			
 			for(int i = 1; i < temp.size(); i++) {
 				if(temp.get(i).x1 > end) {
