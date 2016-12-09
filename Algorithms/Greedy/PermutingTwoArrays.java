@@ -33,7 +33,6 @@ public class PermutingTwoArrays {
 			
 			String ans = "YES";
 			for(int i = 0; i < arraySize; i++) {
-				System.out.println(array1[i] + array2[arraySize - 1 - i]);
 				if(array1[i] + array2[arraySize - 1 - i] < mustAddTo) {
 					ans = "NO";
 					break;
