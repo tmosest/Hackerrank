@@ -6,6 +6,7 @@ import java.util.Scanner;
 /**
  * Project Euler #3: Largest prime factor
  * Easy
+ * Something is wrong wiht my code tried it in C and still misses test case 1
  */
 public class Problem3 {
 
