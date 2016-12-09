@@ -1,5 +1,6 @@
 package ProjectEuler;
 
+import java.math.BigInteger;
 import java.util.Scanner;
 
 /**
@@ -12,37 +13,42 @@ public class Problem3 {
 		Scanner in = new Scanner(System.in);
 		int testCases = in.nextInt();
 		for(int i = 0; i < testCases; i++) {
-			long prime = getLargestPrimeFactorOfNum(in.nextLong());
-			System.out.println(prime);
+			if(in.hasNextBigInteger()) {
+				BigInteger prime = getLargestPrimeFactorOfNum(in.nextBigInteger());
+				System.out.println(prime);
+			} else {
+				long prime = getLargestPrimeFactorOfNum(in.nextLong());
+				System.out.println(prime);
+			}
 		}
 		in.close();
 	}
 
+	private static BigInteger getLargestPrimeFactorOfNum(BigInteger num) {
+		if(num.compareTo(BigInteger.ONE) <= 0) 
+			return num;
+		BigInteger i = BigInteger.ONE.add(BigInteger.ONE);
+		while(i.multiply(i).compareTo(num)  <= 0) {
+			while(num.mod(i) == BigInteger.ZERO) {
+				num = num.divide(i);
+			}
+			i = i.add(BigInteger.ONE);
+		}
+		return num;
+	}
+
 	public static long getLargestPrimeFactorOfNum(long num)
 	{
-		if(num == 1) {
-			return 1;
+		if(num <= 1) {
+			return num;
 		}
-		long minPrime = Integer.MAX_VALUE;
-		for(int i = 1; i <= (int) Math.sqrt( (double) num ); i++) {
-			boolean isPrime = true;
-			if(i == 1) {
-				isPrime = false;
-			} else {
-				for(int j = 1; j < i; j++) {
-					if(i % j == 0 && j != 1) {
-						isPrime = false;
-						break;
-					}
-				}
+		long i = 2;
+		while(i * i  <= num) {
+			while(num % i == 0) {
+				num /= i;
 			}
-			//System.out.println(i + " isPrime: " + isPrime);
-			if(isPrime && num % i == 0 && i < minPrime) {
-				minPrime = i;
-				break;
-			}
+			i += 1;
 		}
-		if(minPrime == Integer.MAX_VALUE) minPrime = 1;
-		return num / minPrime;
+		return num;
 	}
 }
