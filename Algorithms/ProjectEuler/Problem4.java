@@ -3,7 +3,7 @@ package ProjectEuler;
 import java.util.Scanner;
 
 /**
- * Project Euler #3: Project Euler #4: Largest palindrome product
+ * Project Euler #4: Largest palindrome product
  * Medium
  */
 public class Problem4 {
