@@ -1,6 +1,5 @@
 package ProjectEuler;
 
-import java.math.BigInteger;
 import java.util.Scanner;
 
 /**
@@ -14,42 +13,23 @@ public class Problem3 {
 		Scanner in = new Scanner(System.in);
 		int testCases = in.nextInt();
 		for(int i = 0; i < testCases; i++) {
-			if(in.hasNextBigInteger()) {
-				BigInteger prime = getLargestPrimeFactorOfNum(in.nextBigInteger());
-				System.out.println(prime);
-			} else {
-				long prime = getLargestPrimeFactorOfNum(in.nextLong());
-				System.out.println(prime);
-			}
+			long prime = getLargestPrimeFactorOfNum(in.nextLong());
+			System.out.println(prime);
 		}
 		in.close();
 	}
 
-	private static BigInteger getLargestPrimeFactorOfNum(BigInteger num) {
-		if(num.compareTo(BigInteger.ONE) <= 0) 
-			return num;
-		BigInteger i = BigInteger.ONE.add(BigInteger.ONE);
-		while(i.multiply(i).compareTo(num)  <= 0) {
-			while(num.mod(i) == BigInteger.ZERO) {
-				num = num.divide(i);
-			}
-			i = i.add(BigInteger.ONE);
-		}
-		return num;
-	}
-
 	public static long getLargestPrimeFactorOfNum(long num)
 	{
-		if(num <= 1) {
-			return num;
-		}
-		long i = 2;
-		while(i * i  <= num) {
-			while(num % i == 0) {
-				num /= i;
+		long maxi = -1;
+		long temp = num;
+		for(long j = 2; j <= Math.sqrt(temp) + 1; j++) {
+			while(num % j == 0) {
+				if(j > maxi) maxi = j;
+				num /= j;
 			}
-			i += 1;
 		}
-		return num;
+		if(num > 1 && num > maxi) maxi = num;
+		return maxi;
 	}
 }
