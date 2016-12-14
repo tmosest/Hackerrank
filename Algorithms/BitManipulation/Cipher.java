@@ -2,6 +2,10 @@ package BitManipulation;
 
 import java.util.Scanner;
 
+/**
+ *	Algorithms -> Bit Manipulation -> Cipher
+ *	Medium
+ */
 public class Cipher {
 
 	public static void main(String[] args) {
