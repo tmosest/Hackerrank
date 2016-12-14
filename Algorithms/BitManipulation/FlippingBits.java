@@ -3,7 +3,7 @@ package BitManipulation;
 import java.util.Scanner;
 
 /**
- *	Algorithms -> Bit Manipulation -> Lonely Integer
+ *	Algorithms -> Bit Manipulation -> Flipping Bits
  *	Easy
  */
 public class FlippingBits {
