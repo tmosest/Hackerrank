@@ -11,7 +11,7 @@ public class Problem7 {
 	private static boolean debugMode = false;
 	
 	private static boolean[] seive;
-	private static int primeCount;
+	private static int[] primes;
 	
 	
 	public static void main(String[] args) {
@@ -19,35 +19,37 @@ public class Problem7 {
 		
 		int cases = in.nextInt();
 		
+		fillSieve();
+		
 		for(int c = 0; c < cases; c++) {
 			int number = in.nextInt();
-			int prime = fillSieve(number);
-			System.out.println(prime);
+			System.out.println(primes[number - 1]);
 		}
 		
 		in.close();
 	}
 	
-	public static int fillSieve(int number) 
+	public static void fillSieve() 
 	{	
-		seive = new boolean[number * 1000 + 1];
-		primeCount = 0;
+		int limit = 1000000;
+		seive = new boolean[limit + 1];
+		primes = new int[10003];
 		
 		seive[0] = true;
 		seive[1] = true;
 		
-		for(int i = 2; i <= number * 1000; i++) {
+		int primeCount = 0;
+		
+		for(int i = 2; i <= limit; i += 1) {
 			if(!seive[i]) {
-				primeCount++;
-				//System.out.println("prime: " + i);
-				if(primeCount == number) {
-					return i;
-				}
-				for(int j = 1; j * i <= number * 1000; j++) {
+				if(primeCount < 10001)
+					primes[primeCount++] = i;
+				if(debugMode) 
+					System.out.println("prime " + primeCount + " is: " + i);
+				for(int j = 1; j * i <= limit; j++) {
 					seive[i * j] = true;
 				}
 			}
 		}
-		return 0;
 	}
 }
