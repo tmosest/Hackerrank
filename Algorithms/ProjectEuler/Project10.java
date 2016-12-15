@@ -32,17 +32,20 @@ public class Project10 {
 	
 	public static void fillSieve() 
 	{	
-		seive = new boolean[10001];
-		seiveSum = new long[10001];
+		int limit = 1000000;
+		seive = new boolean[limit + 1];
+		seiveSum = new long[limit + 1];
 		primeSum = 0;
 		
 		seive[0] = true;
 		seive[1] = true;
+		seiveSum[0] = 0;
+		seiveSum[1] = 0;
 		
-		for(int i = 2; i <= 10000; i += 1) {
+		for(int i = 2; i <= limit; i += 1) {
 			if(!seive[i]) {
 				primeSum += i;
-				for(int j = 1; j * i <= 10000; j++) {
+				for(int j = 1; j * i <= limit; j++) {
 					seive[i * j] = true;
 				}
 			}
