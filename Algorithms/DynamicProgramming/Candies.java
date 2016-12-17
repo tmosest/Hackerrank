@@ -8,7 +8,7 @@ import java.util.Scanner;
  */
 public class Candies {
 
-	private static boolean debugMode = true;
+	private static boolean debugMode = false;
 	
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
@@ -16,25 +16,37 @@ public class Candies {
 		int numStudents = in.nextInt();
 		
 		int[] studentRatings = new int[numStudents];
+		int[] candy = new int[numStudents];
 		
 		for(int  s = 0; s < numStudents; s++) {
 			studentRatings[s] = in.nextInt();
+			candy[s] = 1;
 		}
 		
 		in.close();
-		
-		int numberOfCandies = numStudents;
 				
-		for(int  s = 0; s < numStudents - 1; s++) {
-			if(studentRatings[s + 1] > studentRatings[s]) {
-				numberOfCandies += 1;
+		for(int  s = 1; s < numStudents; s++) {
+			if(studentRatings[s] > studentRatings[s - 1]) {
+				if(candy[s] < candy[s - 1] + 1)
+					candy[s] = candy[s - 1] + 1; 
+				if(debugMode)
+					System.out.println("child: " + (s + 1) + " rank: " + studentRatings[s] + " candy: " + candy[s]);
 			} 
 		}
 				
-		for(int  s = numStudents - 1; s > 0; s--) {
-			if(studentRatings[s - 1] > studentRatings[s]) {
-				numberOfCandies += 1;
+		for(int  s = numStudents - 2; s >= 0; s--) {
+			if(studentRatings[s] > studentRatings[s + 1]) {
+				if(candy[s] < candy[s + 1] + 1)
+					candy[s] = candy[s + 1] + 1; 
 			} 
+		}
+		
+		long numberOfCandies = 0;
+		
+		for(int c : candy) {
+			numberOfCandies += c;
+			if(debugMode)
+				System.out.println(c);
 		}
 		
 		System.out.println(numberOfCandies);
