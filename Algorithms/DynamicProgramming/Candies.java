@@ -2,9 +2,13 @@ package DynamicProgramming;
 
 import java.util.Scanner;
 
+/**
+ *	Algorithms -> Dynamic Programming -> Candies
+ *	Medium
+ */
 public class Candies {
 
-	private static boolean debugMode = false;
+	private static boolean debugMode = true;
 	
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
@@ -20,21 +24,17 @@ public class Candies {
 		in.close();
 		
 		int numberOfCandies = numStudents;
-		
-		int stack = 0;
-		
-		for(int  s = 1; s < numStudents; s++) {
-			if(studentRatings[s] > studentRatings[s - 1]) {
-				stack++;
-				numberOfCandies += stack;
-			} else if(s < numStudents - 1 && studentRatings[s] > studentRatings[s + 1]) {
-				numberOfCandies++;
-			} else {
-				stack = 0;
-			}
-			if(debugMode) {
-				System.out.println("Student: " + (s + 1) + " rating: " + studentRatings[s] + " Extra Cookies: ");
-			}
+				
+		for(int  s = 0; s < numStudents - 1; s++) {
+			if(studentRatings[s + 1] > studentRatings[s]) {
+				numberOfCandies += 1;
+			} 
+		}
+				
+		for(int  s = numStudents - 1; s > 0; s--) {
+			if(studentRatings[s - 1] > studentRatings[s]) {
+				numberOfCandies += 1;
+			} 
 		}
 		
 		System.out.println(numberOfCandies);
