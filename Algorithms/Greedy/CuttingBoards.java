@@ -51,14 +51,28 @@ public class CuttingBoards {
 			while(rowsIndex >= 0 || columnsIndex >= 0) {
 				//long cost = 0;
 				BigInteger cost = BigInteger.ZERO;
-				if(columnsIndex < 0 || (rowsIndex >= 0 && rowCosts[rowsIndex] > columnCosts[columnsIndex])) {
+				
+				int compare = 0;
+				
+				if(columnsIndex >= 0 && rowsIndex >= 0) {
+					if(rowCosts[rowsIndex] > columnCosts[columnsIndex])
+						compare = 1;
+					else
+						compare = -1;
+				} else if(columnsIndex < 0 && rowsIndex >= 0){
+					compare = 1;
+				} else if(columnsIndex >= 0 && rowsIndex < 0){
+					compare = -1;
+				}
+				
+				if(compare == 1) {
 					//cost = (rowCosts[rowsIndex] % mod) * (columnsCut % mod);
 					BigInteger rowCost = new BigInteger(String.valueOf(rowCosts[rowsIndex])).mod(mod);
 					BigInteger columnCost = new BigInteger(String.valueOf(columnsCut)).mod(mod);
 					cost = rowCost.multiply(columnCost);
 					rowsCut++;
 					rowsIndex--;
-				} else if(columnsIndex >= 0) {
+				} else if(compare == -1) {
 					//cost = (columnCosts[columnsIndex] % mod) * (rowsCut % mod);
 					BigInteger columnCost = new BigInteger(String.valueOf(columnCosts[columnsIndex])).mod(mod);
 					BigInteger rowCost = new BigInteger(String.valueOf(rowsCut)).mod(mod);
@@ -66,7 +80,7 @@ public class CuttingBoards {
 					columnsCut++;
 					columnsIndex--;
 				} else {
-					//break;
+					break;
 				}
 				if(debugMode) 
 					System.out.println("cost: " + cost);
@@ -79,5 +93,6 @@ public class CuttingBoards {
 		
 		in.close();
 	}
-
+	
+	
 }
