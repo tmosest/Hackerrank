@@ -2,6 +2,10 @@ package WeekOfCode.Week27;
 
 import java.util.Scanner;
 
+/**
+ *	Algorithms -> Week of Code 27 -> Drawing Book
+ *	Easy
+ */
 public class DrawingBook {
 
 	public static void main(String[] args) {
