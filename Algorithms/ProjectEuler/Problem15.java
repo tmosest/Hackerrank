@@ -38,7 +38,7 @@ public class Problem15 {
 		for(int i = 1; i <= m; i++)
 			routes *= ( (double) (n + i) / i);
 		
-		return (int) routes;
+		return (int) routes % 1000000007;
 	}
 	
 	/**
