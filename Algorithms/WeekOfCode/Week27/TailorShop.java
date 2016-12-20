@@ -1,6 +1,6 @@
 package WeekOfCode.Week27;
 
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -14,20 +14,27 @@ public class TailorShop {
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
 		
-		HashMap<Integer, Integer> distinceTracker = new HashMap<Integer, Integer> ();
 		
 		int numClusters = in.nextInt();
 		int pricePerButton = in.nextInt();
 		
 		long buttonCount = 0;
 		
+		int[] costs = new int[numClusters];
+		
+		for(int c = 0; c < numClusters; c++) {
+			costs[c] = in.nextInt();
+		}
+		
+		Arrays.sort(costs);
+		
+		int buttonPointer = 0;
+		
 		for(int b = 0; b < numClusters; b++) {
-			int minCostForClust = in.nextInt();
+			int minCostForClust = costs[b];
 			int numberOfButtons = (int) Math.ceil((double) minCostForClust / pricePerButton);
-			while(distinceTracker.get(numberOfButtons) != null) {
-				numberOfButtons++;
-			}
-			distinceTracker.put(numberOfButtons, 1);
+			if(numberOfButtons <= buttonPointer) numberOfButtons = buttonPointer + 1;
+			buttonPointer = numberOfButtons;
 			buttonCount += numberOfButtons;
 		}
 		
@@ -35,5 +42,6 @@ public class TailorShop {
 	
 		System.out.println(buttonCount);
 	}
-
+	
+	
 }
