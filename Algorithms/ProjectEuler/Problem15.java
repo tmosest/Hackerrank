@@ -18,14 +18,48 @@ public class Problem15 {
 			int rows = in.nextInt();
 			int cols = in.nextInt();
 			
-			System.out.println(choose(rows + cols, 2));
+			System.out.println(countRoutes(rows, cols));
 		}
 		
 		in.close();
 	}
 	
-	/*
+	/**
+	 * Using a similar method to the one below.
+	 * Except where m != n;
+	 * @param m
+	 * @param n
+	 * @return
+	 */
+	public static int countRoutes(int n, int m)
+	{
+		int routes = 1;
+		
+		for(int i = 1; i <= m; i++)
+			routes *= ( (double) (n + i) / i);
+		
+		return (int) routes;
+	}
+	
+	/**
+	 * Counts the number of routes using 2n choose n.
+	 * which is the product from i = 1 to n of (n + i) / n
+	 * @param n
+	 * @return
+	 */
+	public static int countRoutes(int n)
+	{
+		int routes = 1;
+		
+		for(int i = 1; i <= n; i++)
+			routes *= ((n + i) / i);
+		
+		return routes;
+	}
+	
+	/**
 	 * n! / k! * (n - k)!
+	 * This approach takes too long and isn't the right way to think about it.
 	 */
 	public static long choose(int n, int k)
 	{
