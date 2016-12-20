@@ -1,5 +1,6 @@
 package WeekOfCode.Week27;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -18,8 +19,6 @@ public class TailorShop {
 		int numClusters = in.nextInt();
 		int pricePerButton = in.nextInt();
 		
-		long buttonCount = 0;
-		
 		int[] costs = new int[numClusters];
 		
 		for(int c = 0; c < numClusters; c++) {
@@ -29,13 +28,14 @@ public class TailorShop {
 		Arrays.sort(costs);
 		
 		int buttonPointer = 0;
+		BigInteger buttonCount = BigInteger.ZERO;
 		
 		for(int b = 0; b < numClusters; b++) {
 			int minCostForClust = costs[b];
 			int numberOfButtons = (int) Math.ceil((double) minCostForClust / pricePerButton);
 			if(numberOfButtons <= buttonPointer) numberOfButtons = buttonPointer + 1;
 			buttonPointer = numberOfButtons;
-			buttonCount += numberOfButtons;
+			buttonCount = buttonCount.add(BigInteger.valueOf(numberOfButtons));
 		}
 		
 		in.close();
