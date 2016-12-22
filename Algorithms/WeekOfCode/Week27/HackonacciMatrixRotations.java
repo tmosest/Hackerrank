@@ -1,6 +1,6 @@
 package WeekOfCode.Week27;
 
-import java.util.ArrayList;
+import java.math.BigInteger;
 import java.util.Scanner;
 
 /**
@@ -10,6 +10,7 @@ import java.util.Scanner;
 public class HackonacciMatrixRotations {
 
 	public static void main(String[] args) {
+		
 		Scanner in = new Scanner(System.in);
 		
 		int n = in.nextInt();
@@ -18,11 +19,12 @@ public class HackonacciMatrixRotations {
 		int queries = in.nextInt();
 		
 		for(int q = 0; q < queries; q++) {
-			hm.rotateMatrix(in.nextInt());
-			System.out.println(hm.calculateDifference());
+			System.out.println(hm.calculateDifference(in.nextLong()));
 		}
 		
 		in.close();
+		
+		//HackonacciMatrix.rotateMatrixTest(5);
 	}
 	
 	/**
@@ -37,48 +39,70 @@ public class HackonacciMatrixRotations {
 	{
 		//Store the matrix
 		private char[][] hackonacciMatrix;
-		private char[][] rotatedHackonacciMatrix;
-		
-		//Should just use a precomputed array of hackonaccis
-		private long[] hackonacciArray;
+		int[] differences;
 		
 		public HackonacciMatrix(int n)
 		{
 			hackonacciMatrix = new char[n][n];
 			
-			this.fillHackonacciArray();
-			
+			differences = new int[3];
 			
 			for(int i = 0; i < n; i++) {
 				for(int j = 0; j < n; j++) {
-					int number = (int) Math.pow((i + 1) * (j + 1), 2);
-					if( hackonacciArray[ number - 1 ] % 2 == 0) {
+					BigInteger number = new BigInteger(String.valueOf(i + 1));
+					number = number.multiply(new BigInteger(String.valueOf(j + 1)));
+					number = number.multiply(number);
+					if(isHackonacciEven(number)) {
 						hackonacciMatrix[i][j] = 'X';
 					} else {
 						hackonacciMatrix[i][j] = 'Y';
 					}
 				}
 			}
-			hackonacciArray = null;
+			
+			calculateDifferences();
+		}
+		
+		public int calculateDifference(long degrees)
+		{
+			int answer = 0;
+			if(degrees % 360 == 90) {
+				answer = differences[0];
+			} else if(degrees % 360 == 180) {
+				answer = differences[1];
+			} else if(degrees % 360 == 270) {
+				answer = differences[2];
+			}
+			return answer;
 		}
 		
 		/**
-		 * Determines the difference between rotated and non rotated array
+		 * Determines the difference between rotated and non rotated array.
+		 * // 90 degree
+		 * test90[i][j] =  test[n - j - 1][i];
+		 * // 180 degree
+		 * test180[i][j] = test[n - i - 1][n - j - 1];
+		 * // 270 degree
+		 * test270[i][j] = test[j][n - i - 1];
 		 * @return
 		 */
-		public int calculateDifference()
+		private void calculateDifferences()
 		{
-			int count = 0;
-			
 			int n = hackonacciMatrix.length;
+			
 			for(int i = 0; i < n; i++) {
 				for(int j = 0; j < n; j++) {
-					if(rotatedHackonacciMatrix[i][j] != hackonacciMatrix[i][j])
-						count++;
+					// 90 degree
+					if(hackonacciMatrix[i][j] != hackonacciMatrix[n - j - 1][i]) 
+						differences[0] += 1;
+					// 180 degree
+					if(hackonacciMatrix[i][j] != hackonacciMatrix[n - i - 1][n - j - 1]) 
+						differences[1] += 1;
+					// 270 degree
+					if(hackonacciMatrix[i][j] != hackonacciMatrix[j][n - i - 1])
+						differences[2] += 1;
 				}
 			}
-			
-			return count;
 		}
 		
 		/**
@@ -96,51 +120,46 @@ public class HackonacciMatrixRotations {
 		}
 		
 		/**
-		 * Print the Rotated Hackonacci Matrix
-		 */
-		public void printRotated()
-		{
-			int n = rotatedHackonacciMatrix.length;
-			for(int i = 0; i < n; i++) {
-				for(int j = 0; j < n; j++) {
-					System.out.print(rotatedHackonacciMatrix[i][j] + " ");
-				}
-				System.out.println("");
-			}
-		}
-		
-		/**
-		 * A better way to compute the hackonacci using an array
-		 * @param n
+		 * Determines if a hackonacci number is even using a nice repitition fact.
+		 * h(1) : F
+		 * h(2) : T
+		 * h(3) : F
+		 * h(4) : T
+		 * h(5) : T
+		 * h(6) : F
+		 * h(7) : F
+		 * This repeats over and over again.
+		 * @param num
 		 * @return
 		 */
-		public void fillHackonacciArray()
+		public static boolean isHackonacciEven(long num)
 		{
-			int n = hackonacciMatrix.length;
-			int n4 = n * n * n * n;
+			boolean isEven = false;
 			
-			hackonacciArray = new long[n4];
+			boolean hackonacciCheck = (num % 7 == 2) || (num % 7 == 4) || (num % 7 == 5);
 			
-			hackonacciArray[0] = 1;
-			hackonacciArray[1] = 2;
-			hackonacciArray[2] = 3;
+			if(hackonacciCheck) isEven = true;
 			
-			for(int i = 3; i < n4; i++) {
-				hackonacciArray[i] = hackonacciArray[i - 1] + 2 * hackonacciArray[i - 2] + 3 * hackonacciArray[i - 3];
-			}
+			return isEven;
 		}
 		
-		/*
-		 * 
-		 */
-		public void rotateMatrix(int degrees)
+		public static boolean isHackonacciEven(BigInteger num)
 		{
-			degrees /= 90;
-			rotatedHackonacciMatrix = rotateMatrix(hackonacciMatrix, degrees);
+			boolean isEven = false;
+			
+			boolean hackonacciCheck = 
+					(num.mod(new BigInteger("7")).compareTo(new BigInteger("2")) == 0) || 
+					(num.mod(new BigInteger("7")).compareTo(new BigInteger("4")) == 0) || 
+					(num.mod(new BigInteger("7")).compareTo(new BigInteger("7")) == 0);
+			
+			if(hackonacciCheck) isEven = true;
+			
+			return isEven;
 		}
 		
 		/**
-		 * Compute the hackonacci of a number
+		 * Compute the hackonacci of a number.
+		 * This uses the slow version.
 		 * @param n
 		 * @return
 		 */
@@ -155,136 +174,67 @@ public class HackonacciMatrixRotations {
 			return hackonacci(n - 1) + 2 * hackonacci(n - 2) + 3 * hackonacci(n - 3);
 		}
 		
-		public static char[][] rotateMatrix(char[][] matrix, int rotations)
+		public static void rotateMatrixTest(int n)
 		{
-			ArrayList<char[]> cyclicGroups = convertToCyclicGroups(matrix);
-			cyclicGroups = shiftCyclicGroups(cyclicGroups, rotations);
-			matrix = converToMatrix(cyclicGroups, matrix.length, matrix[0].length);
-			return matrix;
-		}
-		
-		public static char[][] converToMatrix(ArrayList<char[]> cyclicGroups, int rows, int columns)
-		{
-			int k = 0;
+			int[][] test = new int[n][n];
+			int[][] test90 = new int[n][n];
+			int[][] test180 = new int[n][n];
+			int[][] test270 = new int[n][n];
 			
-			char[][] matrix = new char[rows][columns];
+			int count = 0;
 			
-			for(char[] cyclicGroup : cyclicGroups) {
-				
-				int[] topLeft = {0 + k, 0 + k};
-				int[] botLeft = {(rows - 1) - k, 0 + k};
-				int[] topRight = {0 + k, (columns - 1) - k};
-				int[] botRight = {(rows - 1) - k, (columns - 1) - k};
-				
-				int diffTopBotLeft = botLeft[0] - topLeft[0];
-				int diffBotLeftBotRight = botRight[1] - botLeft[1];
-				int diffBotRightTopRight = topRight[0] - botRight[0];
-				int diffTopRightTopLeft = topLeft[1] - topRight[1];
-				
-				int i = topLeft[0];
-				int j = topLeft[1];
-				
-				for(char c : cyclicGroup) {
-					matrix[i][j] = c;
-					if(diffTopBotLeft != 0) {
-						i++;
-						diffTopBotLeft--;
-					} else if(diffBotLeftBotRight != 0) {
-						j++;
-						diffBotLeftBotRight--;
-					} else if(diffBotRightTopRight != 0) {
-						i--;
-						diffBotRightTopRight++;
-					} else {
-						j--;
-						diffTopRightTopLeft++;
-					}
+			for(int i = 0; i < n; i++) {
+				for(int j = 0; j < n; j++) {
+					test[i][j] = count++;
 				}
-				
-				k++;
-			}
-			return matrix;
-		}
-		
-		public static ArrayList<char[]> shiftCyclicGroups(ArrayList<char[]> cyclicGroups, int rotations) 
-		{
-			ArrayList<char[]> shiftedCyclidGroups = new ArrayList<char[]>();
-			for(char[] cyclicGroup : cyclicGroups) {
-				//print1DArray(cyclicGroup);
-				char[] shiftedCyclicGroup = new char[cyclicGroup.length];
-				for(int i = 0; i < cyclicGroup.length; i++) {
-					int shiftedValue = (i + rotations) % cyclicGroup.length;
-					shiftedCyclicGroup[shiftedValue] = cyclicGroup[i];
-				}
-				//print1DArray(shiftedCyclicGroup);
-				shiftedCyclidGroups.add(shiftedCyclicGroup);
-			}
-			return shiftedCyclidGroups;
-		}
-		
-		public static ArrayList<char[]> convertToCyclicGroups(char[][] matrix)
-		{
-			//Know that size of each is (rows - 1) * 2 + (columns - 1) * 2 = (rows - (2k+1)) with k = 0
-			//then (rows - 3) * 2 + (columns - 3) * 2 until that is smaller than or equal to zero.
-			//so 0 = (rows - (2k + 1)) * 2 + (columns - (2k + 1)) * 2
-			int k = 0;
-			int rows = matrix.length;
-			int columns = matrix[0].length;
-			int formula = 1;
-			
-			ArrayList<char[]> cyclicGroups = new ArrayList<char[]>();
-			int end = Math.min(columns, rows);
-			while(formula > 0) {
-				formula = (rows - (2 * k + 1)) * 2 + (columns - (2 * k + 1)) * 2;
-				//System.out.println(formula);
-				if(formula > 0) {
-					char[] cyclicGroup = new char[formula];
-					
-					int[] topLeft = {0 + k, 0 + k};
-					int[] botLeft = {(rows - 1) - k, 0 + k};
-					int[] topRight = {0 + k, (columns - 1) - k};
-					int[] botRight = {(rows - 1) - k, (columns - 1) - k};
-					
-					int diffTopBotLeft = botLeft[0] - topLeft[0];
-					int diffBotLeftBotRight = botRight[1] - botLeft[1];
-					int diffBotRightTopRight = topRight[0] - botRight[0];
-					int diffTopRightTopLeft = topLeft[1] - topRight[1];
-					
-					if(diffTopBotLeft <= 0 || diffBotLeftBotRight <= 0 || 
-					   diffBotRightTopRight >= 0 || diffTopRightTopLeft >= 0) {
-						break;
-					}
-					
-					int count = 0;
-					int i = topLeft[0];
-					int j = topLeft[1];
-					
-					while(count < formula) {
-						cyclicGroup[count] = matrix[i][j];
-						if(diffTopBotLeft != 0) {
-							i++;
-							diffTopBotLeft--;
-						} else if(diffBotLeftBotRight != 0) {
-							j++;
-							diffBotLeftBotRight--;
-						} else if(diffBotRightTopRight != 0) {
-							i--;
-							diffBotRightTopRight++;
-						} else if(diffTopRightTopLeft != 0){
-							j--;
-							diffTopRightTopLeft++;
-						}
-						count++;
-					}
-					
-					//print1DArray(cyclicGroup);
-					cyclicGroups.add(cyclicGroup);
-				}
-				k++;
 			}
 			
-			//System.out.println(k);
-			return cyclicGroups;
+			for(int i = 0; i < n; i++) {
+				for(int j = 0; j < n; j++) {
+					// 90 degree
+					test90[i][j] =  test[n - j - 1][i];
+					// 180 degree
+					test180[i][j] = test[n - i - 1][n - j - 1];
+					// 270 degree
+					test270[i][j] = test[j][n - i - 1];
+				}
+			}
+			
+			System.out.println("Original:");
+			for(int i = 0; i < n; i++) {
+				for(int j = 0; j < n; j++) {
+					System.out.print(test[i][j] + " ");
+				}
+				System.out.println("");
+			}
+			System.out.println("");
+
+			System.out.println("90:");
+			for(int i = 0; i < n; i++) {
+				for(int j = 0; j < n; j++) {
+					System.out.print(test90[i][j] + " ");
+				}
+				System.out.println("");
+			}
+			System.out.println("");
+			
+			System.out.println("180");
+			for(int i = 0; i < n; i++) {
+				for(int j = 0; j < n; j++) {
+					System.out.print(test180[i][j] + " ");
+				}
+				System.out.println("");
+			}
+			System.out.println("");
+			
+			System.out.println("270");
+			for(int i = 0; i < n; i++) {
+				for(int j = 0; j < n; j++) {
+					System.out.print(test270[i][j] + " ");
+				}
+				System.out.println("");
+			}
+			System.out.println("");
 		}
 	}
 }
