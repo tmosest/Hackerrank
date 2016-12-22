@@ -21,7 +21,7 @@ public class ZeroMoveNim {
 			
 			int winner = GameOfNim.determineWinnderOfGame(stacksOfStones);
 			
-			String output = (winner == 1) ? "First" : "Second";
+			String output = (winner == 1) ? "W" : "L";
 			System.out.println(output);
 		}
 		
