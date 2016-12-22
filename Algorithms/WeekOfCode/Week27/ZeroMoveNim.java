@@ -46,6 +46,10 @@ public class ZeroMoveNim {
 			
 			if(stackXOR == 0) winner = 2;
 			
+			if(stacks.length % 2 == 1) {
+				winner = (winner == 1) ? 2 : 1;
+			}
+			
 			return winner;
 		}
 	}
