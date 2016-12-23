@@ -76,6 +76,12 @@ public class SimplifiedChessEngine {
 			Piece pieceToAdd;
 			if(symbol.equals(Piece.queenSymbol)) {
 				pieceToAdd = new Queen(symbol, col, row, player);
+			} else if(symbol.equals(Piece.bishopSymbol)) {
+				pieceToAdd = new Bishop(symbol, col, row, player);
+			} else if(symbol.equals(Piece.rockSymbol)) {
+				pieceToAdd = new Rook(symbol, col, row, player);
+			} else if(symbol.equals(Piece.knightSymbol)) {
+				pieceToAdd = new Knight(symbol, col, row, player);
 			} else {
 				pieceToAdd = new Piece(symbol, col, row, player);
 			}
@@ -146,9 +152,8 @@ public class SimplifiedChessEngine {
 			 * This function returns an array list of the possible moves for a piece.
 			 * @return
 			 */
-			public ArrayList<int[]> getMoves(int[][] board)
+			public ArrayList<int[]> getMoves()
 			{
-				int boardSize = board.length;
 				ArrayList<int[]> moves = new ArrayList<int[]> ();
 				
 				//Assume Pawn just for fun
@@ -158,7 +163,7 @@ public class SimplifiedChessEngine {
 					move[0] -= 2;
 				}
 				
-				if(validMove(move, boardSize) && board[move[0]][move[1]] == 0)
+				if(validMove(move) && gb.board[move[0]][move[1]] == 0)
 					moves.add(move);
 				
 				return moves;
@@ -170,14 +175,20 @@ public class SimplifiedChessEngine {
 			 * @param boardSize
 			 * @return
 			 */
-			private boolean validMove(int[] move, int boardSize)
+			private boolean validMove(int[] move)
 			{
 				boolean isValidMove = false;
 				if(move[0] < boardSize && 
 				   move[1] < boardSize && 
 				   move[0] >= 0 &&
-				   move[1] >= 0)
+				   move[1] >= 0) {
 					isValidMove = true;
+					int tileValue = gb.board[move[0]][move[1]];
+					if(tileValue > 0) {
+						if(this.player == gb.getPieceColor(tileValue))
+							isValidMove = false;
+					}
+				}
 				return isValidMove;
 			} // end validMove
 			
@@ -186,9 +197,8 @@ public class SimplifiedChessEngine {
 			 * @param boardSize
 			 * @return
 			 */
-			private ArrayList<int[]> getStraightMoves(int[][] board)
+			private ArrayList<int[]> getStraightMoves()
 			{
-				int boardSize = board.length;
 				ArrayList<int[]> moves = new ArrayList<int[]> ();
 				
 				//System.out.println("start: " + this.row + " : " + this.col);
@@ -197,7 +207,7 @@ public class SimplifiedChessEngine {
 				for(int i = 1; i <= this.row; i++) {
 					int[] move = {this.row - i, this.col};
 					//System.out.println("row: " + move[0] + " col: " + move[1]);
-					if(!validMove(move, boardSize) || board[move[0]][move[1]] > 0) break;
+					if(!validMove(move)) break;
 					moves.add(move);
 				}
 				
@@ -205,7 +215,7 @@ public class SimplifiedChessEngine {
 				for(int i = 1; i <= boardSize - this.row; i++) {
 					int[] move = {this.row + i, this.col};
 					//System.out.println("row: " + move[0] + " col: " + move[1]);
-					if(!validMove(move, boardSize) || board[move[0]][move[1]] > 0) break;
+					if(!validMove(move)) break;
 					moves.add(move);
 				}
 				
@@ -213,7 +223,7 @@ public class SimplifiedChessEngine {
 				for(int i = 1; i <= boardSize - this.col; i++) {
 					int[] move = {this.row, this.col + i};
 					//System.out.println("row: " + move[0] + " col: " + move[1]);
-					if(!validMove(move, boardSize) || board[move[0]][move[1]] > 0) break;
+					if(!validMove(move)) break;
 					moves.add(move);
 				}
 				
@@ -221,7 +231,7 @@ public class SimplifiedChessEngine {
 				for(int i = 1; i <= this.col; i++) {
 					int[] move = {this.row, this.col - i};
 					//System.out.println("row: " + move[0] + " col: " + move[1]);
-					if(!validMove(move, boardSize) || board[move[0]][move[1]] > 0) break;
+					if(!validMove(move)) break;
 					moves.add(move);
 				}
 				
@@ -229,13 +239,12 @@ public class SimplifiedChessEngine {
 			} // end getStraightMoves
 			
 			/**
-			 * Determines all of the straight moves for a piece.
+			 * Determines all of the diagnol moves for a piece.
 			 * @param boardSize
 			 * @return
 			 */
-			private ArrayList<int[]> getDiagnoltMoves(int[][] board)
+			private ArrayList<int[]> getDiagnoltMoves()
 			{
-				int boardSize = board.length;
 				ArrayList<int[]> moves = new ArrayList<int[]> ();
 				
 				//System.out.println("start: " + this.row + " : " + this.col);
@@ -244,7 +253,7 @@ public class SimplifiedChessEngine {
 				for(int i = 1; i <= boardSize; i++) {
 					int[] move = {this.row - i, this.col + i};
 					//System.out.println("row: " + move[0] + " col: " + move[1]);
-					if(!validMove(move, boardSize) || board[move[0]][move[1]] > 0) break;
+					if(!validMove(move)) break;
 					moves.add(move);
 				}
 				
@@ -252,7 +261,7 @@ public class SimplifiedChessEngine {
 				for(int i = 1; i <= boardSize; i++) {
 					int[] move = {this.row + i, this.col - i};
 					//System.out.println("row: " + move[0] + " col: " + move[1]);
-					if(!validMove(move, boardSize) || board[move[0]][move[1]] > 0) break;
+					if(!validMove(move)) break;
 					moves.add(move);
 				}
 				
@@ -260,7 +269,7 @@ public class SimplifiedChessEngine {
 				for(int i = 1; i <= boardSize; i++) {
 					int[] move = {this.row + i, this.col + i};
 					//System.out.println("row: " + move[0] + " col: " + move[1]);
-					if(!validMove(move, boardSize) || board[move[0]][move[1]] > 0) break;
+					if(!validMove(move)) break;
 					moves.add(move);
 				}
 				
@@ -268,7 +277,7 @@ public class SimplifiedChessEngine {
 				for(int i = 1; i <= boardSize; i++) {
 					int[] move = {this.row - i, this.col - i};
 					//System.out.println("row: " + move[0] + " col: " + move[1]);
-					if(!validMove(move, boardSize) || board[move[0]][move[1]] > 0) break;
+					if(!validMove(move)) break;
 					moves.add(move);
 				}
 				
@@ -276,6 +285,54 @@ public class SimplifiedChessEngine {
 			} // end getDiagnoltMoves
 			
 		}// end Piece
+		
+		/**
+		 * Class for a Rook
+		 * @author tmosest
+		 *
+		 */
+		private class Rook extends Piece
+		{
+
+			public Rook(String symbol, String col, int row, char player) {
+				super(symbol, col, row, player);
+			}
+			
+			/**
+			 * This function returns an array list of the possible moves for a piece.
+			 * @return
+			 */
+			@Override
+			public ArrayList<int[]> getMoves()
+			{
+				return super.getStraightMoves();
+			} // end getMoves
+			
+		} //end class Rook
+		
+		/**
+		 * Class for a Bishop
+		 * @author tmosest
+		 *
+		 */
+		private class Bishop extends Piece
+		{
+
+			public Bishop(String symbol, String col, int row, char player) {
+				super(symbol, col, row, player);
+			}
+			
+			/**
+			 * This function returns an array list of the possible moves for a piece.
+			 * @return
+			 */
+			@Override
+			public ArrayList<int[]> getMoves()
+			{
+				return super.getDiagnoltMoves();
+			} // end getMoves
+			
+		} // end class Bishop
 		
 		/**
 		 * Class for a Queen
@@ -300,17 +357,49 @@ public class SimplifiedChessEngine {
 			 * @return
 			 */
 			@Override
-			public ArrayList<int[]> getMoves(int[][] board)
+			public ArrayList<int[]> getMoves()
 			{
 				ArrayList<int[]> moves = new ArrayList<int[]> ();
 				
-				moves.addAll(super.getStraightMoves(board));
-				moves.addAll(super.getDiagnoltMoves(board));
+				moves.addAll(super.getStraightMoves());
+				moves.addAll(super.getDiagnoltMoves());
 				
 				return moves;
 			} // end getMoves
 			
 		} // end class Queen
+		
+		private class Knight extends Piece 
+		{
+
+			public Knight(String symbol, String col, int row, char player) {
+				super(symbol, col, row, player);
+			}
+			
+			/**
+			 * This function returns an array list of the possible moves for a piece.
+			 * @return
+			 */
+			@Override
+			public ArrayList<int[]> getMoves()
+			{
+				ArrayList<int[]> moves = new ArrayList<int[]> ();
+				
+				int rs[] = {1,2,2,1,-1,-2,-2,-1};
+			    int cs[] = {-2,-1,1,2,2,1,-1,-2};
+			    
+			    int r, c;
+			    for(int i = 0; i < rs.length; i++) {
+			    	r = this.row + rs[i];
+			        c = this.col + cs[i];
+			        int[] move = {r, c};
+			        if(super.validMove(move)) moves.add(move);
+			    }
+				
+				return moves;
+			} // end getMoves
+			
+		} // end class Knight
 		
 		/**
 		 * Class that represents a chess Game Board of various sizes;
@@ -374,13 +463,12 @@ public class SimplifiedChessEngine {
 				if(pieceIndex > pieces.size()) return;
 				
 				Piece piece = pieces.get(pieceIndex);
-				ArrayList<int[]> moves = piece.getMoves(board);
+				ArrayList<int[]> moves = piece.getMoves();
 				System.out.println("Print moves for: " + piece.player + " : " + piece.symbol);
 				for(int[] move : moves) {
 					System.out.print("("+ move[0] + ", " + move[1] + ")");
-					if(move[0] < 0) move[0] = 0;
-					if(move[1] < 0) move[1] = 0;
-					board[move[0]][move[1]] = -1;
+					if(board[move[0]][move[1]] == 0)
+						board[move[0]][move[1]] = -1;
 				}
 				System.out.println("");
 				this.print();
@@ -427,6 +515,11 @@ public class SimplifiedChessEngine {
 				}
 				return index;
 			} // end convertLetterToRow 
+			
+			public char getPieceColor(int index)
+			{
+				return pieces.get(index - 1).player;
+			}
 			
 		}// end GameBoard
 		
