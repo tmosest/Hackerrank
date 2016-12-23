@@ -9,7 +9,7 @@ import java.util.Scanner;
  */
 public class SimplifiedChessEngine {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws CloneNotSupportedException {
 		Scanner in = new Scanner(System.in);
 		
 		int games = in.nextInt();
@@ -25,15 +25,17 @@ public class SimplifiedChessEngine {
 				String type = in.next();
 				String col  = in.next();
 				int row 	= in.nextInt();
-				ce.addPieceAndDraw(type, col, row, 'W');
+				ce.addPiece(type, col, row, 'W');
 			}
 			
 			for(int i = 0; i < blackNumPieces; i++) {
 				String type = in.next();
 				String col  = in.next();
 				int row 	= in.nextInt();
-				ce.addPieceAndDraw(type, col, row, 'B');
+				ce.addPiece(type, col, row, 'B');
 			}
+			
+			ce.solve();
 		}
 		
 		in.close();
@@ -49,7 +51,7 @@ public class SimplifiedChessEngine {
 	{
 		private int boardSize = 4;
 		
-		private int maxMoves;
+		private int moves;
 		private GameBoard gb;
 		
 		/**
@@ -58,10 +60,56 @@ public class SimplifiedChessEngine {
 		 */
 		public ChessEngine(int moves)
 		{
-			maxMoves = moves;
-			gb = new GameBoard(boardSize);
-			gb.print();
+			this.moves = moves;
+			this.gb = new GameBoard(boardSize);
 		} // end ChessEngine
+		
+		public void solve() throws CloneNotSupportedException
+		{
+			char winner = solve('W', this.gb, this.moves);
+			if(winner == 'W')
+				System.out.println("YES");
+			else
+				System.out.println("NO");
+		}
+		
+		private char solve(char colorToMove, GameBoard gameBoard, int remainingMoves) throws CloneNotSupportedException
+		{
+			if(remainingMoves == 0) {
+				return 'B';
+			}
+			
+			System.out.println("Solving for: " + colorToMove);
+			gb.print();
+			
+			ArrayList<Piece> pieces = new ArrayList(gameBoard.getPieces(colorToMove));
+			
+			for(Piece piece : pieces) {
+				System.out.println("Getting Moves for: " + piece.symbol);
+				gb.printMoves(piece);
+				ArrayList<int[]> moves = new ArrayList(piece.getMoves(gameBoard.board));
+				for(int[] move : moves) {
+					System.out.println("Moving to: " + move[0] + " : " + move[1]);
+					//Capture Queen?
+					if(gameBoard.board[move[0]][move[1]] != null && gameBoard.board[move[0]][move[1]].symbol.equals(Piece.queenSymbol))
+						return colorToMove;
+					
+					//Move to Empty field or capture a regular piece
+					GameBoard newGB = new GameBoard(gameBoard);
+					newGB.board[piece.row][piece.col] = null;
+					newGB.board[move[0]][move[1]] = (gameBoard.board[piece.row][piece.col] == null) 
+							? null : (Piece) gameBoard.board[piece.row][piece.col].clone();
+					if(newGB.board[move[0]][move[1]] != null) {
+						newGB.board[move[0]][move[1]].row = move[0];
+						newGB.board[move[0]][move[1]].col = move[1];
+					}
+					char tmp = solve((colorToMove == 'W') ? 'B' : 'W', newGB, --remainingMoves);
+					if(tmp == colorToMove) return colorToMove;
+					
+				} // end for moves
+			}// end for pieces
+			return (colorToMove == 'W') ? 'B' : 'W';
+		}
 		
 		/**
 		 * Adds a new Piece to the game board.
@@ -71,7 +119,7 @@ public class SimplifiedChessEngine {
 		 * @param row
 		 * @param player
 		 */
-		public void addPiece(String symbol, String col, int row, char player)
+		public Piece addPiece(String symbol, String col, int row, char player)
 		{
 			Piece pieceToAdd;
 			if(symbol.equals(Piece.queenSymbol)) {
@@ -86,6 +134,7 @@ public class SimplifiedChessEngine {
 				pieceToAdd = new Piece(symbol, col, row, player);
 			}
 			gb.addPiece(pieceToAdd);
+			return pieceToAdd;
 		} // end addPieceAndDraw
 		
 		/**
@@ -98,9 +147,9 @@ public class SimplifiedChessEngine {
 		 */
 		public void addPieceAndDraw(String symbol, String col, int row, char player)
 		{
-			this.addPiece(symbol, col, row, player);
+			Piece pieceToAdd = this.addPiece(symbol, col, row, player);
 			gb.print();
-			gb.printMoves(gb.numberPieces - 1);
+			gb.printMoves(pieceToAdd);
 		} // end addPieceAndDraw
 		
 		/**
@@ -108,7 +157,7 @@ public class SimplifiedChessEngine {
 		 * @author tmosest
 		 *
 		 */
-		private class Piece
+		private class Piece implements Cloneable
 		{
 			//Pieces Symbols
 			public static final String queenSymbol = "Q";
@@ -140,6 +189,14 @@ public class SimplifiedChessEngine {
 			} // end Piece
 			
 			/**
+			 * Creates a possible move piece
+			 */
+			public Piece()
+			{
+				this.symbol = "X";
+			}// end Piece Possible Move
+			
+			/**
 			 * Returns the opposite color of the piece.
 			 * @return
 			 */
@@ -152,7 +209,7 @@ public class SimplifiedChessEngine {
 			 * This function returns an array list of the possible moves for a piece.
 			 * @return
 			 */
-			public ArrayList<int[]> getMoves()
+			public ArrayList<int[]> getMoves(Piece[][] board)
 			{
 				ArrayList<int[]> moves = new ArrayList<int[]> ();
 				
@@ -163,7 +220,7 @@ public class SimplifiedChessEngine {
 					move[0] -= 2;
 				}
 				
-				if(validMove(move) && gb.board[move[0]][move[1]] == 0)
+				if(validMove(move, board))
 					moves.add(move);
 				
 				return moves;
@@ -175,7 +232,7 @@ public class SimplifiedChessEngine {
 			 * @param boardSize
 			 * @return
 			 */
-			private boolean validMove(int[] move)
+			private boolean validMove(int[] move, Piece[][] board)
 			{
 				boolean isValidMove = false;
 				if(move[0] < boardSize && 
@@ -183,9 +240,9 @@ public class SimplifiedChessEngine {
 				   move[0] >= 0 &&
 				   move[1] >= 0) {
 					isValidMove = true;
-					int tileValue = gb.board[move[0]][move[1]];
-					if(tileValue > 0) {
-						if(this.player == gb.getPieceColor(tileValue))
+					Piece piece = board[move[0]][move[1]];
+					if(piece != null) {
+						if(this.player == piece.player)
 							isValidMove = false;
 					}
 				}
@@ -197,7 +254,7 @@ public class SimplifiedChessEngine {
 			 * @param boardSize
 			 * @return
 			 */
-			private ArrayList<int[]> getStraightMoves()
+			private ArrayList<int[]> getStraightMoves(Piece[][] board)
 			{
 				ArrayList<int[]> moves = new ArrayList<int[]> ();
 				
@@ -207,7 +264,7 @@ public class SimplifiedChessEngine {
 				for(int i = 1; i <= this.row; i++) {
 					int[] move = {this.row - i, this.col};
 					//System.out.println("row: " + move[0] + " col: " + move[1]);
-					if(!validMove(move)) break;
+					if(!validMove(move, board)) break;
 					moves.add(move);
 				}
 				
@@ -215,7 +272,7 @@ public class SimplifiedChessEngine {
 				for(int i = 1; i <= boardSize - this.row; i++) {
 					int[] move = {this.row + i, this.col};
 					//System.out.println("row: " + move[0] + " col: " + move[1]);
-					if(!validMove(move)) break;
+					if(!validMove(move, board)) break;
 					moves.add(move);
 				}
 				
@@ -223,7 +280,7 @@ public class SimplifiedChessEngine {
 				for(int i = 1; i <= boardSize - this.col; i++) {
 					int[] move = {this.row, this.col + i};
 					//System.out.println("row: " + move[0] + " col: " + move[1]);
-					if(!validMove(move)) break;
+					if(!validMove(move, board)) break;
 					moves.add(move);
 				}
 				
@@ -231,7 +288,7 @@ public class SimplifiedChessEngine {
 				for(int i = 1; i <= this.col; i++) {
 					int[] move = {this.row, this.col - i};
 					//System.out.println("row: " + move[0] + " col: " + move[1]);
-					if(!validMove(move)) break;
+					if(!validMove(move, board)) break;
 					moves.add(move);
 				}
 				
@@ -243,7 +300,7 @@ public class SimplifiedChessEngine {
 			 * @param boardSize
 			 * @return
 			 */
-			private ArrayList<int[]> getDiagnoltMoves()
+			private ArrayList<int[]> getDiagnoltMoves(Piece[][] board)
 			{
 				ArrayList<int[]> moves = new ArrayList<int[]> ();
 				
@@ -253,7 +310,7 @@ public class SimplifiedChessEngine {
 				for(int i = 1; i <= boardSize; i++) {
 					int[] move = {this.row - i, this.col + i};
 					//System.out.println("row: " + move[0] + " col: " + move[1]);
-					if(!validMove(move)) break;
+					if(!validMove(move, board)) break;
 					moves.add(move);
 				}
 				
@@ -261,7 +318,7 @@ public class SimplifiedChessEngine {
 				for(int i = 1; i <= boardSize; i++) {
 					int[] move = {this.row + i, this.col - i};
 					//System.out.println("row: " + move[0] + " col: " + move[1]);
-					if(!validMove(move)) break;
+					if(!validMove(move, board)) break;
 					moves.add(move);
 				}
 				
@@ -269,7 +326,7 @@ public class SimplifiedChessEngine {
 				for(int i = 1; i <= boardSize; i++) {
 					int[] move = {this.row + i, this.col + i};
 					//System.out.println("row: " + move[0] + " col: " + move[1]);
-					if(!validMove(move)) break;
+					if(!validMove(move, board)) break;
 					moves.add(move);
 				}
 				
@@ -277,12 +334,16 @@ public class SimplifiedChessEngine {
 				for(int i = 1; i <= boardSize; i++) {
 					int[] move = {this.row - i, this.col - i};
 					//System.out.println("row: " + move[0] + " col: " + move[1]);
-					if(!validMove(move)) break;
+					if(!validMove(move, board)) break;
 					moves.add(move);
 				}
 				
 				return moves;
 			} // end getDiagnoltMoves
+			
+			protected Object clone() throws CloneNotSupportedException {
+		        return super.clone();
+		    }
 			
 		}// end Piece
 		
@@ -303,9 +364,9 @@ public class SimplifiedChessEngine {
 			 * @return
 			 */
 			@Override
-			public ArrayList<int[]> getMoves()
+			public ArrayList<int[]> getMoves(Piece[][] board)
 			{
-				return super.getStraightMoves();
+				return super.getStraightMoves(board);
 			} // end getMoves
 			
 		} //end class Rook
@@ -327,9 +388,9 @@ public class SimplifiedChessEngine {
 			 * @return
 			 */
 			@Override
-			public ArrayList<int[]> getMoves()
+			public ArrayList<int[]> getMoves(Piece[][] board)
 			{
-				return super.getDiagnoltMoves();
+				return super.getDiagnoltMoves(board);
 			} // end getMoves
 			
 		} // end class Bishop
@@ -357,12 +418,12 @@ public class SimplifiedChessEngine {
 			 * @return
 			 */
 			@Override
-			public ArrayList<int[]> getMoves()
+			public ArrayList<int[]> getMoves(Piece[][] board)
 			{
 				ArrayList<int[]> moves = new ArrayList<int[]> ();
 				
-				moves.addAll(super.getStraightMoves());
-				moves.addAll(super.getDiagnoltMoves());
+				moves.addAll(super.getStraightMoves(board));
+				moves.addAll(super.getDiagnoltMoves(board));
 				
 				return moves;
 			} // end getMoves
@@ -381,7 +442,7 @@ public class SimplifiedChessEngine {
 			 * @return
 			 */
 			@Override
-			public ArrayList<int[]> getMoves()
+			public ArrayList<int[]> getMoves(Piece[][] board)
 			{
 				ArrayList<int[]> moves = new ArrayList<int[]> ();
 				
@@ -393,7 +454,7 @@ public class SimplifiedChessEngine {
 			    	r = this.row + rs[i];
 			        c = this.col + cs[i];
 			        int[] move = {r, c};
-			        if(super.validMove(move)) moves.add(move);
+			        if(super.validMove(move, board)) moves.add(move);
 			    }
 				
 				return moves;
@@ -409,9 +470,7 @@ public class SimplifiedChessEngine {
 		private class GameBoard
 		{
 			private int boardSize;
-			private int[][] board;
-			private ArrayList<Piece> pieces;
-			private int numberPieces;
+			private Piece[][] board;
 			
 			private String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 			
@@ -422,9 +481,26 @@ public class SimplifiedChessEngine {
 			public GameBoard(int size)
 			{
 				this.boardSize = size;
-				this.board = new int[size][size];
-				this.numberPieces = 0;
-				this.pieces = new ArrayList<Piece>();
+				this.board = new Piece[size][size];
+			}
+			
+			/**
+			 * Create a new chess board from a copy.
+			 * @param size
+			 * @throws CloneNotSupportedException 
+			 */
+			public GameBoard(GameBoard gb) throws CloneNotSupportedException
+			{
+				this.boardSize = gb.boardSize;
+				this.board = new Piece[gb.boardSize][gb.boardSize];
+				for(int i = 0; i < this.boardSize; i++) {
+					for(int j = 0; j < this.boardSize; j++) {
+						if(gb.board[i][j] == null)
+							this.board[i][j] = gb.board[i][j];
+						else 
+							this.board[i][j] = (Piece) gb.board[i][j].clone();
+					}
+				}
 			}
 			
 			/**
@@ -435,13 +511,13 @@ public class SimplifiedChessEngine {
 				for(int i = 0; i < boardSize; i++) {
 					System.out.print(boardSize - i + "\t");
 					for(int j = 0; j < boardSize; j++) {
-						int temp = board[i][j];
+						Piece piece = board[i][j];
 						String symbol = "";
-						if(temp > 0) {
-							Piece piece = pieces.get(--temp);
-							symbol =  piece.player + piece.symbol;
-						} else if(temp < 0) {
-							symbol = "X";
+						if(piece != null) {
+							if(!piece.symbol.equals("X"))
+								symbol =  piece.player + piece.symbol;
+							else
+								symbol = "X";
 						}
 						System.out.print(symbol + "\t");
 					}
@@ -458,17 +534,13 @@ public class SimplifiedChessEngine {
 			 * Print all of the moves for a piece
 			 * @param pieceIndex
 			 */
-			public void printMoves(int pieceIndex) {
-				//Don't draw if out of range!
-				if(pieceIndex > pieces.size()) return;
-				
-				Piece piece = pieces.get(pieceIndex);
-				ArrayList<int[]> moves = piece.getMoves();
+			public void printMoves(Piece piece) {
+				ArrayList<int[]> moves = piece.getMoves(this.board);
 				System.out.println("Print moves for: " + piece.player + " : " + piece.symbol);
 				for(int[] move : moves) {
 					System.out.print("("+ move[0] + ", " + move[1] + ")");
-					if(board[move[0]][move[1]] == 0)
-						board[move[0]][move[1]] = -1;
+					if(board[move[0]][move[1]] == null)
+						board[move[0]][move[1]] = new Piece();
 				}
 				System.out.println("");
 				this.print();
@@ -482,8 +554,8 @@ public class SimplifiedChessEngine {
 			{
 				for(int i = 0; i < boardSize; i++) {
 					for(int j = 0; j < boardSize; j++) {
-						if(board[i][j] == -1)
-							board[i][j] = 0;
+						if(board[i][j] != null && board[i][j].symbol.equals("X"))
+							board[i][j] = null;
 					}
 				}
 			}// end clearMoves
@@ -496,8 +568,7 @@ public class SimplifiedChessEngine {
 			{
 				piece.row = boardSize - piece.rowIndex;
 				piece.col = convertLetterToRow(piece.colLetter);
-				pieces.add(piece);
-				board[piece.row][piece.col] = ++this.numberPieces;
+				board[piece.row][piece.col] = piece;
 			} // end addPiece
 			
 			/**
@@ -516,9 +587,20 @@ public class SimplifiedChessEngine {
 				return index;
 			} // end convertLetterToRow 
 			
-			public char getPieceColor(int index)
+			public ArrayList<Piece> getPieces(char colorToMove)
 			{
-				return pieces.get(index - 1).player;
+				ArrayList<Piece> pieces = new ArrayList<Piece> ();
+				//Grab Pieces
+				for(int i = 0; i < boardSize; i++) {
+					for(int j = 0; j < boardSize; j++) {
+						if(gb.board[i][j] != null && gb.board[i][j].player == colorToMove) {
+							gb.board[i][j].row = i;
+							gb.board[i][j].col = j;
+							pieces.add(gb.board[i][j]);
+						}
+					}
+				}
+				return pieces;
 			}
 			
 		}// end GameBoard
