@@ -191,55 +191,89 @@ public class SimplifiedChessEngine {
 				int boardSize = board.length;
 				ArrayList<int[]> moves = new ArrayList<int[]> ();
 				
-				//Create a move object
-				int moveIndex = 1;
 				//System.out.println("start: " + this.row + " : " + this.col);
-				int[] move = {this.row + moveIndex, this.col};
 				
-				//Check all backwards moves
-				while(validMove(move, boardSize)) {
-					System.out.println("x: " + move[0] + " y: " + move[1]);
-					if(board[move[0]][move[1]] > 0) break;
+				//Move Forwards
+				for(int i = 1; i <= this.row; i++) {
+					int[] move = {this.row - i, this.col};
+					//System.out.println("row: " + move[0] + " col: " + move[1]);
+					if(!validMove(move, boardSize) || board[move[0]][move[1]] > 0) break;
 					moves.add(move);
-					move[0] += ++moveIndex;
 				}
 				
-				moveIndex = 1;
-				move[0] = this.row - moveIndex;
-				
-				//Check all forward moves
-				while(validMove(move, boardSize)) {
-					System.out.println("x: " + move[0] + " y: " + move[1]);
-					if(board[move[0]][move[1]] > 0) break;
+				//Move Backwards
+				for(int i = 1; i <= boardSize - this.row; i++) {
+					int[] move = {this.row + i, this.col};
+					//System.out.println("row: " + move[0] + " col: " + move[1]);
+					if(!validMove(move, boardSize) || board[move[0]][move[1]] > 0) break;
 					moves.add(move);
-					move[0] -= ++moveIndex;
 				}
 				
-				moveIndex = 1;
-				move[0] = this.row;
-				move[1] = this.col + moveIndex;
-				
-				//Check all right moves
-				while(validMove(move, boardSize)) {
-					System.out.println("x: " + move[0] + " y: " + move[1]);
-					if(board[move[0]][move[1]] > 0) break;
+				//Move Right
+				for(int i = 1; i <= boardSize - this.col; i++) {
+					int[] move = {this.row, this.col + i};
+					//System.out.println("row: " + move[0] + " col: " + move[1]);
+					if(!validMove(move, boardSize) || board[move[0]][move[1]] > 0) break;
 					moves.add(move);
-					move[1] += ++moveIndex;
 				}
 				
-				moveIndex = 1;
-				move[1] = this.col - moveIndex;
-				
-				//Check all left moves
-				while(validMove(move, boardSize)) {
-					System.out.println("x: " + move[0] + " y: " + move[1]);
-					if(board[move[0]][move[1]] > 0) break;
+				//Move Left
+				for(int i = 1; i <= this.col; i++) {
+					int[] move = {this.row, this.col - i};
+					//System.out.println("row: " + move[0] + " col: " + move[1]);
+					if(!validMove(move, boardSize) || board[move[0]][move[1]] > 0) break;
 					moves.add(move);
-					move[1] -= ++moveIndex;
 				}
 				
 				return moves;
-			}
+			} // end getStraightMoves
+			
+			/**
+			 * Determines all of the straight moves for a piece.
+			 * @param boardSize
+			 * @return
+			 */
+			private ArrayList<int[]> getDiagnoltMoves(int[][] board)
+			{
+				int boardSize = board.length;
+				ArrayList<int[]> moves = new ArrayList<int[]> ();
+				
+				//System.out.println("start: " + this.row + " : " + this.col);
+				
+				//Move Forwards and right
+				for(int i = 1; i <= boardSize; i++) {
+					int[] move = {this.row - i, this.col + i};
+					//System.out.println("row: " + move[0] + " col: " + move[1]);
+					if(!validMove(move, boardSize) || board[move[0]][move[1]] > 0) break;
+					moves.add(move);
+				}
+				
+				//Move Backwards and left
+				for(int i = 1; i <= boardSize; i++) {
+					int[] move = {this.row + i, this.col - i};
+					//System.out.println("row: " + move[0] + " col: " + move[1]);
+					if(!validMove(move, boardSize) || board[move[0]][move[1]] > 0) break;
+					moves.add(move);
+				}
+				
+				//Move Right and backwards
+				for(int i = 1; i <= boardSize; i++) {
+					int[] move = {this.row + i, this.col + i};
+					//System.out.println("row: " + move[0] + " col: " + move[1]);
+					if(!validMove(move, boardSize) || board[move[0]][move[1]] > 0) break;
+					moves.add(move);
+				}
+				
+				//Move Left and forwards
+				for(int i = 1; i <= boardSize; i++) {
+					int[] move = {this.row - i, this.col - i};
+					//System.out.println("row: " + move[0] + " col: " + move[1]);
+					if(!validMove(move, boardSize) || board[move[0]][move[1]] > 0) break;
+					moves.add(move);
+				}
+				
+				return moves;
+			} // end getDiagnoltMoves
 			
 		}// end Piece
 		
@@ -268,12 +302,12 @@ public class SimplifiedChessEngine {
 			@Override
 			public ArrayList<int[]> getMoves(int[][] board)
 			{
-				//int boardSize = board.length;
-				//ArrayList<int[]> moves = new ArrayList<int[]> ();
+				ArrayList<int[]> moves = new ArrayList<int[]> ();
 				
-				//moves.addAll(super.getStraightMoves(board));
+				moves.addAll(super.getStraightMoves(board));
+				moves.addAll(super.getDiagnoltMoves(board));
 				
-				return super.getStraightMoves(board);
+				return moves;
 			} // end getMoves
 			
 		} // end class Queen
