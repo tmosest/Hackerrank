@@ -1,6 +1,7 @@
 package WeekOfCode.Week27;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -9,16 +10,24 @@ public class CoprimePaths {
  
 	public static boolean isNodeCoprime;
 	
+	public static boolean[] seive;
+	public static int[] primes;
+	
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
 		
 		int verticies = in.nextInt();
 		int queries = in.nextInt();
 		
-		long[] weights = new long[verticies];
+		int[] weights = new int[verticies];
 		
+		//generate the seive
+		fillSieve();
+		
+		int max = 0;
 		for(int v = 0; v < verticies; v++) {
-			weights[v] = in.nextLong();
+			weights[v] = in.nextInt();
+			if(weights[v] > max) max = weights[v];
 		}
 		
 		Graph g = new Graph(verticies, weights);
@@ -35,9 +44,70 @@ public class CoprimePaths {
 		
 		in.close();
 	}
+	
+	public static void fillSieve() 
+	{	
+		int limit = 3163;
+		seive = new boolean[limit + 1];
+		primes = new int[1000];
+		
+		seive[0] = true;
+		seive[1] = true;
+		
+		int primeCount = 0;
+		
+		for(int i = 2; i <= limit; i += 1) {
+			if(!seive[i]) {
+				primes[primeCount++] = i;
+				for(int j = 1; j * i <= limit; j++) {
+					seive[i * j] = true;
+				}
+			}
+		}
+		
+		seive = null;
+	}
+	
+	public static int[] calculateThreePrimeFactors(int number)
+	{
+		int[] primeFactors = new int[3];
+		int primeCount = 0;
+		
+		for(int i = 0; i < primeFactors.length && primes[i] <= number; i++) {
+			if(number % primes[i] == 0) {
+				primeFactors[primeCount] = primes[i];
+				primeCount++;
+				if(primeCount == 3) break;
+			}
+		}
+		
+		Arrays.sort(primeFactors);
+		
+		/*
+		System.out.print("Prime factors of " + number + " : ");
+		for(int i = 0; i < primeFactors.length; i++) {
+			System.out.print(primeFactors[i] + ", ");
+		}
+		System.out.println("");
+		*/
+		
+		return primeFactors;
+	}
 
 	public static class CoprimeNode
 	{
+		public static boolean isCoprime(int[] a, int[] b) 
+		{
+			for(int i = 0; i < a.length; i++) {
+				for(int j = 0; j < b.length; j++) {
+					if(a[i] != 0 && b[j] != 0) {
+						if(a[i] == b[j]) return false;
+					}
+				}
+			}
+			return true;
+		}
+		
 		public static boolean isCoprime(long a, long b) 
 		{
 			return gcd(a, b) == 1;
@@ -56,7 +126,7 @@ public class CoprimePaths {
 	    private boolean[] marked;  // marked[v] = is there an s-v path
 	    private int[] edgeTo;      // edgeTo[v] = previous edge on shortest s-v path
 	    private int[] distTo;      // distTo[v] = number of edges shortest s-v path
-	    //private int[] coprimeCount;
+	    private int[] coprimeCount;
         private Graph G;
 	    
 	    /**
@@ -91,8 +161,13 @@ public class CoprimePaths {
 	                if (!marked[w]) {
 	                    edgeTo[w] = v;
 	                    distTo[w] = distTo[v] + 1;
-	                    //int add = (isNodeCoprime) ? 1 : 0;
-	                    //coprimeCount[w] = coprimeCount[v] + add;
+	                    /*int x;
+	                    int coprimeCountSum = 0;
+	        	        for (x = v; distTo[x] != 0; x = edgeTo[x]) {
+	        	        	boolean coprime = CoprimeNode.isCoprime(G.weights[w], G.weights[x]);
+	                        if(coprime) coprimeCountSum += 1;
+	        	        }
+	                    coprimeCount[w] =  coprimeCountSum;*/
 	                    marked[w] = true;
 	                    q.enqueue(w);
 	                }
@@ -158,7 +233,7 @@ public class CoprimePaths {
 		 private final int V; // # Vertices
 		 private int E;	// # Edges
 		 private Bag<Integer>[] adj; // The Adjacency Matrix
-		 public long[] weights;
+		 public int[][] weights;
 	
 		 public Graph(int V) {
 			 if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
@@ -170,15 +245,15 @@ public class CoprimePaths {
 		     }
 		}
 		 
-		public Graph(int V, long[] values) {
+		public Graph(int V, int[] values) {
 			 if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
 		     this.V = V;
 		     this.E = 0;
 		     adj = (Bag<Integer>[]) new Bag[V];
-		     weights = new long[V];
+		     weights = new int[V][3];
 		     for (int v = 0; v < V; v++) {
 		    	 adj[v] = new Bag<Integer>();
-		    	 weights[v] = values[v];
+		    	 weights[v] = calculateThreePrimeFactors(values[v]);
 		     }
 		}
 		 
