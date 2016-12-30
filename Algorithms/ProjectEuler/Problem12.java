@@ -11,6 +11,7 @@ public class Problem12 {
 	
 	private static int numberOfDivisorsLimit = 1000;
 	private static int[] numberOfDivisors = new int[numberOfDivisorsLimit + 1];
+	private static int[] primes = {2,4,6,9,16,18,20,24,36,40,48,90,112,128,144,162,168,192,240,320,480,576,648,768,1024};
 	
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
@@ -57,22 +58,14 @@ public class Problem12 {
 		int divisors = 1;
 		int count = 0;
 		
-		while(num % 2 == 0) {
-			count += 1;
-			num = num / 2;
-		}
-		divisors *= (count + 1);
-		
-		int p = 3;
-		while(num != 1) {
-			count = 0;
-			while(num % p == 0) {
+		for(int prime : primes) {
+			while(num % prime == 0) {
 				count += 1;
-				num = num / p;
+				num = num / prime;
 			}
-			divisors *= (count + 1);
-			p += 2;
+			if(num == 0) break;
 		}
+		
 		return divisors;
 	}
 	
