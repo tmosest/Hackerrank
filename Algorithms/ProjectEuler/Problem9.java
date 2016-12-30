@@ -25,21 +25,24 @@ public class Problem9 {
 	
 	public static void printPythagoreanSumProduct(int sum)
 	{
+		if(sum % 2 == 1) {
+			System.out.println(-1);
+			return;
+		}
+		
+		int maxProduct = -1;
 		int a;
-	    for (a = 1; a <= sum/3; a++)
-	    {
+	    for (a = 1; a <= sum/3; a++) {
 	        int b;
-	        for (b = a + 1; b <= sum/2; b++)
-	        {
+	        for (b = a + 1; b <= sum/2; b++) {
 	            int c = sum - a - b;
 	            if ( a*a + b*b == c*c ) {
 	            	int product = a * b * c;
-	            	System.out.println(product);
-	            	return;
+	            	maxProduct = Math.max(product, maxProduct);
 	            }
 	        }
 	    }
-		System.out.println(-1);
+	   	System.out.println(maxProduct);
 	}
 	
 	public static int gcd(int a, int b)
