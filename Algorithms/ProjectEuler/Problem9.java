@@ -17,37 +17,28 @@ public class Problem9 {
 		for(int c = 0; c < cases; c++) {
 			
 			int number = in.nextInt();
-			printPythagoreanSum(number);
+			printPythagoreanSumProduct(number);
 		}
 		
 		in.close();
 	}
 	
-	public static void printPythagoreanSum(int s)
+	public static void printPythagoreanSumProduct(int sum)
 	{
-		int s2 = s / 2;
-		int mlimit = (int) Math.sqrt(s2) - 1;
-		for(int m = 2; m <= mlimit; m++) {
-			int sm = s2 / m;
-			while(sm % 2 == 0) {
-				sm = sm / 2;
-			}
-			int k = m + 1;
-			if(m % 2 == 1) {
-				k += 1;
-			}
-			while(k <= 2 * m && k <= sm) {
-				if(sm % k == 0 && gcd(k , m) == 1) {
-					int d = s2 / (k * m);
-					int n = k - m;
-					int a = d * (m * m - n * n);
-					int b = 2 * d * m * n;
-					int c = d * (m * m * n * n);
-					System.out.println(a * b * c);
-					return;
-				}
-			}
-		}
+		int a;
+	    for (a = 1; a <= sum/3; a++)
+	    {
+	        int b;
+	        for (b = a + 1; b <= sum/2; b++)
+	        {
+	            int c = sum - a - b;
+	            if ( a*a + b*b == c*c ) {
+	            	int product = a * b * c;
+	            	System.out.println(product);
+	            	return;
+	            }
+	        }
+	    }
 		System.out.println(-1);
 	}
 	
