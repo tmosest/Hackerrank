@@ -2,6 +2,11 @@ package GameTheory;
 
 import java.util.Scanner;
 
+/**
+ *	Algorithms -> Game Theory -> Misère Nim
+ *	Easy
+ *  http://mathoverflow.net/questions/71802/analysis-of-misere-nim
+ */
 public class MisèreNim {	
 
 	public static void main(String[] args) {
@@ -21,7 +26,7 @@ public class MisèreNim {
 			
 			int winner = GameOfNim.determineWinnderOfGame(stacksOfStones);
 			
-			String output = (winner == 2) ? "First" : "Second";
+			String output = (winner == 1) ? "First" : "Second";
 			System.out.println(output);
 		}
 		
@@ -32,15 +37,21 @@ public class MisèreNim {
 	{
 		private static int determineWinnderOfGame(int[] stacks)
 		{
+			boolean hasStackGreaterThanOne = false;
+			
 			int winner = 1;
 			
 			int stackXOR = stacks[0];
 			
+			if(stacks[0] > 1) hasStackGreaterThanOne = true;
+			
 			for(int i = 1; i < stacks.length; i++) {
 				stackXOR ^= stacks[i];
+				if(stacks[i] > 1) hasStackGreaterThanOne = true;
 			}
 			
-			if(stackXOR == 0) winner = 2;
+			if( (stackXOR == 0 && hasStackGreaterThanOne) ||  (stackXOR == 1 && !hasStackGreaterThanOne)) 
+				winner = 2;
 			
 			return winner;
 		}
