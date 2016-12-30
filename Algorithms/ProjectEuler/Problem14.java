@@ -11,7 +11,7 @@ public class Problem14 {
 	private static boolean debugMode = false;
 	
 	private static int max = 5000001;
-	private static int[] maxCollatzLengths = new int[max];
+	private static long[] maxCollatzLengths = new long[max];
 	
 	public static void main(String[] args)
 	{
@@ -29,18 +29,18 @@ public class Problem14 {
 		in.close();
 	}
 	
-	public static int longestCollazChain(int number)
+	public static long longestCollazChain(int number)
 	{
 		return maxCollatzLengths[number];
 	}
 	
 	public static void generateCollaztLengths()
 	{
-		int longest = 0;
-		int longestVal = Integer.MIN_VALUE;
+		long longest = 0;
+		long longestVal = Integer.MIN_VALUE;
 		
 		for(int i = 1; i < max; i++) {
-			int length = lengthOfCollatzChain(i);
+			long length = lengthOfCollatzChain(i);
 			if(length >= longestVal) {
 				longestVal = length;
 				longest = i;
@@ -49,7 +49,7 @@ public class Problem14 {
 		}
 	}
 	
-	public static int lengthOfCollatzChain(int number)
+	public static long lengthOfCollatzChain(long number)
 	{
 		int length = 0;
 		while(number > 1) {
