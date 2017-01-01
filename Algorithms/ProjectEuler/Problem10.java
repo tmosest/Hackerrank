@@ -6,7 +6,7 @@ import java.util.Scanner;
  * Project Euler #10: Summation of primes
  * Medium
  */
-public class Project10 {
+public class Problem10 {
 	
 	private static boolean debugMode = false;
 	
