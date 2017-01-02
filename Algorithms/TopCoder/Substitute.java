@@ -23,6 +23,8 @@ public class Substitute {
 				if(letter == key.charAt(j)) {
 					value *= 10;
 					if(j != key.length() - 1) {
+						if(j + 1 >= 10)
+							value *= 10;
 						value += (j + 1);
 					}
 				}
