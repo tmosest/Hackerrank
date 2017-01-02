@@ -1,15 +1,18 @@
 package ProjectEuler;
 
-import java.math.BigInteger;
 import java.util.Scanner;
-
 /**
  * Project Euler #15: Lattice paths  
  * Easy
  */
 public class Problem15 {
 
+	private static int[][] pascalTriangle;
+	private static int n = 1000;
+	
 	public static void main(String[] args) {
+		generatePascalTriangle();
+		
 		Scanner in = new Scanner(System.in);
 		
 		int cases = in.nextInt();
@@ -17,54 +20,25 @@ public class Problem15 {
 		for(int c = 0; c < cases; c++) {
 			int rows = in.nextInt();
 			int cols = in.nextInt();
-			
-			System.out.println(countRoutes(rows, cols));
+			System.out.println(pascalTriangle[rows + cols][cols] % 1000000007);
 		}
 		
 		in.close();
 	}
 	
-	/**
-	 * Using a similar method to the one below.
-	 * Except where m != n;
-	 * @param m
-	 * @param n
-	 * @return
-	 */
-	public static int countRoutes(int n, int m)
+	private static void generatePascalTriangle()
 	{
-		int routes = 1;
-		
-		for(int i = 1; i <= m; i++)
-			routes *= ( ( (double) (n + i) / i ) % 1000000007 );
-		
-		return (int) routes % 1000000007;
-	}
-	
-	/**
-	 * Counts the number of routes using 2n choose n.
-	 * which is the product from i = 1 to n of (n + i) / n
-	 * @param n
-	 * @return
-	 */
-	public static int countRoutes(int n)
-	{
-		int routes = 1;
-		
-		for(int i = 1; i <= n; i++)
-			routes *= ((n + i) / i);
-		
-		return routes;
-	}
-	
-	/**
-	 * n! / k! * (n - k)!
-	 * This approach takes too long and isn't the right way to think about it.
-	 */
-	public static long choose(int n, int k)
-	{
-		if(k == 0) return 1;
-	    return (n * choose(n - 1, k - 1)) / k;
-
+		pascalTriangle = new int[n][n];
+		// Iterate through every line and print integer(s) in it
+		for (int line = 0; line < n; line++) {
+			// Every line has number of integers equal to line number
+		    for (int i = 0; i <= line; i++) {
+		      // First and last values in every row are 1
+		      if (line == i || i == 0)
+		    	  pascalTriangle[line][i] = 1;
+		      else // Other values are sum of values just above and left of above
+		    	  pascalTriangle[line][i] = pascalTriangle[line-1][i-1] % 1000000007 + pascalTriangle[line-1][i] % 1000000007;
+		    }
+		  }
 	}
 }
