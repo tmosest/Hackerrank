@@ -7,6 +7,9 @@ import java.util.Scanner;
  *	Hard
  *  djjcddjggbiigjhfghehhbgdigjicafgjcehhfgifadihiajgciagicdahcbajjbhifjiaajigdgdfhdiijjgaiejgegbbiigida
  *  aaaaabccigicgjihidfiejfijgidgbhhehgfhjgiibggjddjjd
+ *  
+ *  aaaaaaaaaccddeikusbccfseagluimqvagocfqqcikvcjvhnuezxdcoxffortjyzjmsjvivcxujlsnxcfztwtegpvqqtgkwgijyzkohzhqmfhapweqbqmtfnumdzgolmmsmpgmeoggrtsdcebcvxectzjqeezjplvunofppmnyzzbgheghgklphkqcsjmsjmqabwkoeehktblvgnsbiltyvfrktrpcdkgjwnuckcijpvixosgrssokcmgltbhedgodkhvhtmrnryosnxfdyhbvdtykhddkjvsrmxyfltlztuwpmrftjrgjjlowzrnztizdgtrbkelrjkpeoqpmiwqzzhgoxbkrkfggptbozuyrfehrezenttskjqjyurfkkrjyggnusejtjjonzmkxfjldyltdwrxfervfixqhpyolzvvfnnnmlvmwuyyxzlxrlvlnpvlexixqkwpfmgvvyldysetmyrxqduulqojlfzjolffpgwrfwf
+ *  aaaaaaaaaccdeikusbdccfseagluimqvagocfqqcikvcjvhnuezxdcoxffortjyzjmsjvivcxujlsnxcfztwtegpvqqtgkwgijyzkohzhqmfhapweqbqmtfnumdzgolmmsmpgmeoggrtsdcebcvxectzjqeezjplvunofppmnyzzbgheghgklphkqcsjmsjmqabwkoeehktblvgnsbiltyvfrktrpcdkgjwnuckcijpvixosgrssokcmgltbhedgodkhvhtmrnryosnxfdyhbvdtykhddkjvsrmxyfltlztuwpmrftjrgjjlowzrnztizdgtrbkelrjkpeoqpmiwqzzhgoxbkrkfggptbozuyrfehrezenttskjqjyurfkkrjyggnusejtjjonzmkxfjldyltdwrxfervfixqhpyolzvvfnnnmlvmwuyyxzlxrlvlnpvlexixqkwpfmgvvyldysetmyrxqduulqojlfzjolffpgwrfwf
  */
 public class ReverseShuffleMerge {
 
@@ -23,22 +26,22 @@ public class ReverseShuffleMerge {
 		int[] letterCounts = new int[26];
 		for(int i = 0; i < input.length(); i++) {
 			letterCounts[input.charAt(i) - 'a']++;
-			if(debugMode) 
-				System.out.println("Letter: " + input.charAt(i) + " count: " + letterCounts[input.charAt(i) - 'a']);
+			//if(debugMode) 
+				//System.out.println("Letter: " + input.charAt(i) + " count: " + letterCounts[input.charAt(i) - 'a']);
 		}
 		
 		//Determine letter counts:
 		int[] requiredCounts = new int[26];
 		for(int i = 0; i < letterCounts.length; i++) {
 			requiredCounts[i] = letterCounts[i] / 2;
-			if(debugMode) 
-				System.out.println("requiredCounts: " + i + " count: " + requiredCounts[i]);
+			//if(debugMode) 
+				//System.out.println("requiredCounts: " + i + " count: " + requiredCounts[i]);
 		}
 		
 		//Loop through String backwards and try to find letters.
 		int smallest = smallest(requiredCounts);
-		if(debugMode) 
-			System.out.println("smallest: " + smallest);
+		//if(debugMode) 
+			//System.out.println("smallest: " + smallest);
 		StringBuilder sb = new StringBuilder(input.length()/2);
 		char best_seen = ('z' + 1) ;
 		int best_index = 0;
@@ -59,7 +62,7 @@ public class ReverseShuffleMerge {
 			//Look to see if we need to add letter.
 			if(index != smallest && requiredCounts[index] > 0 && letterCounts[index] < requiredCounts[index]) {
 				//Then I have to take that letter. Only if we didn't skip a better letter.
-				if(letter == best_seen || requiredCounts[input.charAt(input.length() - best_index - 1) - 'a'] == 0) {
+				if(i == best_index || requiredCounts[input.charAt(input.length() - best_index - 1) - 'a'] == 0) {
 					--requiredCounts[index];
 					sb.append(letter);
 					best_seen = ('z' + 1) ;
@@ -69,8 +72,8 @@ public class ReverseShuffleMerge {
 				} else {
 					//I need to go back and set the best letter.
 					while(i > best_index) {
-						if(debugMode) 
-							System.out.println("i: " + i + " best: " + best_index);
+						//if(debugMode) 
+							//System.out.println("i: " + i + " best: " + best_index);
 						//Reset counts
 						letter =  input.charAt(input.length() - i - 1);
 						index = letter - 'a';
