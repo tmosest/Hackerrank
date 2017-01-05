@@ -5,6 +5,8 @@ import java.util.Scanner;
 /**
  *	Algorithms ->  Greedy -> Reverse Shuffle Merge
  *	Hard
+ *  djjcddjggbiigjhfghehhbgdigjicafgjcehhfgifadihiajgciagicdahcbajjbhifjiaajigdgdfhdiijjgaiejgegbbiigida
+ *  aaaaabccigicgjihidfiejfijgidgbhhehgfhjgiibggjddjjd
  */
 public class ReverseShuffleMerge {
 
@@ -57,7 +59,7 @@ public class ReverseShuffleMerge {
 			//Look to see if we need to add letter.
 			if(index != smallest && requiredCounts[index] > 0 && letterCounts[index] < requiredCounts[index]) {
 				//Then I have to take that letter. Only if we didn't skip a better letter.
-				if(letter == best_seen) {
+				if(letter == best_seen || requiredCounts[input.charAt(input.length() - best_index - 1) - 'a'] == 0) {
 					--requiredCounts[index];
 					sb.append(letter);
 					best_seen = ('z' + 1) ;
