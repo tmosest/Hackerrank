@@ -47,7 +47,6 @@ public class LeafAndLimelightAttack {
 		else if(n == 1)
 			return 1;
 		else if(n == 2) {
-			System.out.println(2);
 			return 10;
 		}
 		else if(sumOfDiagnols[n] != 0)
@@ -64,7 +63,6 @@ public class LeafAndLimelightAttack {
 		long n2 = ((n % mod) * (n % mod)) % mod;
 		for(int i = 0; i < 4; i++) {
 			sum += (n2 - (((n - 1) % mod) * i) % mod) % mod;
-			//System.out.println(sum);
 		}
 		return sum;
 	}
