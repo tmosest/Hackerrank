@@ -10,9 +10,10 @@ public class LuckyNumberEight {
 	
 	private static long mod = 1000000007;
 	private static long MOD = 1000000007;
+	private static boolean debugMode = false;
 	
-	public static void main(String[] args) {
-		/*
+	public static void main(String[] args) throws Exception {
+		
 		Scanner in = new Scanner(System.in);
 		
 		int size = in.nextInt();
@@ -21,25 +22,38 @@ public class LuckyNumberEight {
 		in.close();
 		
 		long forwards = countSubSequnecesDivisibleByEightForwards(s);
-		//long backwards = countSubSequnecesDivisibleByEightBackwards(s);
-		//long ans = (long) Math.ceil(((double) (forwards + backwards)) / 2);
 		System.out.println(forwards);
-		*/
-		printEightTable();
+		
+		//printEightTable();
 		//System.out.println(countSubSequnecesDivisibleBySix("1254"));
+		//testSomeNumbers();
+		//System.out.println(countSubSequnecesDivisibleByEightForwards("208"));
 	}
 
+	private static void testSomeNumbers() throws Exception
+	{
+		for(long i = 199900; i <= 200000; i++) {
+			String s = String.valueOf(i);
+			long ans = countSubSequnecesDivisibleByEightForwards(s);
+			if(ans > 0)
+				System.out.println(s + " : " + ans);
+		}
+	}
+	
 	/**
 	 * 
 	 * @param s
 	 * @return
+	 * @throws Exception 
 	 */
-	private static long countSubSequnecesDivisibleByEightBackwards(String s)
+	private static long countSubSequnecesDivisibleByEightBackwards(String s) throws Exception
 	{
 		//generateEightTable();
 		long[] remainders = new long[8];
 		
 		for(int i = s.length() - 1; i >= 0; i--) {
+			if(s.charAt(i) - '0' == 0) throw new Exception();
+			
 			int remainder = (s.charAt(i) - '0') % 8;
 			
 			long zero, one, two, three, four,
@@ -110,6 +124,7 @@ public class LuckyNumberEight {
 			//System.out.println("remainder: " + remainder + " : " +remainders[remainder]);
 			
 		}
+		//if(remainders[0] < 0) throw new Exception();
 		return remainders[0] %= MOD;
 	}
 	
@@ -118,15 +133,24 @@ public class LuckyNumberEight {
 	 * 
 	 * @param s
 	 * @return
+	 * @throws Exception 
 	 */
-	private static long countSubSequnecesDivisibleByEightForwards(String s)
+	private static long countSubSequnecesDivisibleByEightForwards(String s) throws Exception
 	{
 		//generateEightTable();
 		long[] remainders = new long[8];
 		
 		for(int i = 0; i < s.length(); i++) {
+			//if(s.charAt(i) - '0' == 0) throw new Exception();
 			int remainder = (s.charAt(i) - '0') % 8;
-			
+			if(debugMode) {
+				System.out.println("i: " + i + " c: " + s.charAt(i) + " r: " + remainder);
+				System.out.println("Before:");
+				for(int c = 0; c < 8; c++) {
+					if(debugMode)
+						System.out.println(c + " : " + remainders[c]);
+				}
+			}
 			long zero, one, two, three, four,
 			five, six, seven;
 			
@@ -152,7 +176,7 @@ public class LuckyNumberEight {
 					remainders[2] %= MOD;
 					remainders[4] += two;
 					remainders[4] %= MOD;
-					remainders[4] += two;
+					remainders[4] += six;
 					remainders[4] %= MOD;
 					remainders[6] += three;
 					remainders[6] %= MOD;
@@ -293,16 +317,20 @@ public class LuckyNumberEight {
 					remainders[7] %= MOD;
 					break;
 			}
+			if(debugMode)
+				System.out.println("After:");
 			for(int c = 0; c < 8; c++) {
 				remainders[c] %= MOD;
-				//System.out.println(c + " : " + remainders[c]);
+				if(debugMode) 
+					System.out.println(c + " : " + remainders[c]);
 			}
 			remainders[remainder]++;
 			remainders[remainder] %= MOD;
-			//System.out.println("remainder: " + remainder + " : " +remainders[remainder]);
+			if(debugMode)
+				System.out.println("remainder: " + remainder + " : " +remainders[remainder]);
 			
 		}
-		
+		if(remainders[0] < 0) throw new Exception();
 		return remainders[0];
 	}
 	
