@@ -12,6 +12,7 @@ public class LuckyNumberEight {
 	private static long MOD = 1000000007;
 	
 	public static void main(String[] args) {
+		/*
 		Scanner in = new Scanner(System.in);
 		
 		int size = in.nextInt();
@@ -23,8 +24,8 @@ public class LuckyNumberEight {
 		//long backwards = countSubSequnecesDivisibleByEightBackwards(s);
 		//long ans = (long) Math.ceil(((double) (forwards + backwards)) / 2);
 		System.out.println(forwards);
-		
-		//printEightTable();
+		*/
+		printEightTable();
 		//System.out.println(countSubSequnecesDivisibleBySix("1254"));
 	}
 
