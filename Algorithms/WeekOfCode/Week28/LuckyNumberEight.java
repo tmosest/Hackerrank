@@ -15,7 +15,10 @@ public class LuckyNumberEight {
 		
 		in.close();
 		
-		System.out.println(countSubSequnecesDivisibleByEight(s));
+		long forwards = countSubSequnecesDivisibleByEightForwards(s);
+		//long backwards = countSubSequnecesDivisibleByEightBackwards(s);
+		//long ans = (long) Math.ceil(((double) (forwards + backwards)) / 2);
+		System.out.println(forwards);
 		
 		//printEightTable();
 		//System.out.println(countSubSequnecesDivisibleBySix("1254"));
@@ -26,12 +29,12 @@ public class LuckyNumberEight {
 	 * @param s
 	 * @return
 	 */
-	private static long countSubSequnecesDivisibleByEight(String s)
+	private static long countSubSequnecesDivisibleByEightBackwards(String s)
 	{
 		//generateEightTable();
 		long[] remainders = new long[8];
 		
-		for(int i = 0; i < s.length(); i++) {
+		for(int i = s.length() - 1; i >= 0; i--) {
 			int remainder = (s.charAt(i) - '0') % 8;
 			
 			long zero, one, two, three, four,
@@ -45,7 +48,7 @@ public class LuckyNumberEight {
 			five = remainders[5] % MOD;
 			six = remainders[6] % MOD;
 			seven = remainders[7] % MOD;
-			/*
+			
 			switch(remainder)
 			{
 				case 0:
@@ -92,127 +95,197 @@ public class LuckyNumberEight {
 					remainders[7] += one;
 					break;
 			}
-			*/
+			
+			for(int c = 0; c < 8; c++) {
+				remainders[c] %= MOD;
+				//System.out.println(c + " : " + remainders[c]);
+			}
+			remainders[remainder]++;
+			remainders[remainder] %= MOD;
+			//System.out.println("remainder: " + remainder + " : " +remainders[remainder]);
+			
+		}
+		return remainders[0] %= MOD;
+	}
+	
+	
+	/**
+	 * 
+	 * @param s
+	 * @return
+	 */
+	private static long countSubSequnecesDivisibleByEightForwards(String s)
+	{
+		//generateEightTable();
+		long[] remainders = new long[8];
+		
+		for(int i = 0; i < s.length(); i++) {
+			int remainder = (s.charAt(i) - '0') % 8;
+			
+			long zero, one, two, three, four,
+			five, six, seven;
+			
+			zero = remainders[0] % MOD;
+			one = remainders[1] % MOD;
+			two = remainders[2] % MOD;
+			three = remainders[3] % MOD;
+			four = remainders[4] % MOD;
+			five = remainders[5] % MOD;
+			six = remainders[6] % MOD;
+			seven = remainders[7] % MOD;
+			
 			switch(remainder)
 			{
 				case 0:
 					remainders[0] += zero;
 					remainders[0] %= MOD;
 					remainders[0] += four;
+					remainders[0] %= MOD;
 					remainders[2] += one;
 					remainders[2] %= MOD;
 					remainders[2] += five;
+					remainders[2] %= MOD;
 					remainders[4] += two;
 					remainders[4] %= MOD;
 					remainders[4] += two;
+					remainders[4] %= MOD;
 					remainders[6] += three;
 					remainders[6] %= MOD;
 					remainders[6] += seven;
+					remainders[6] %= MOD;
 					break;
 					
 				case 1:
 					remainders[1] += zero;
 					remainders[1] %= MOD;
 					remainders[1] += four;
+					remainders[1] %= MOD;
 					remainders[3] += one;
 					remainders[3] %= MOD;
 					remainders[3] += five;
+					remainders[3] %= MOD;
 					remainders[5] += two;
 					remainders[5] %= MOD;
 					remainders[5] += six;
+					remainders[5] %= MOD;
 					remainders[7] += three;
 					remainders[7] %= MOD;
 					remainders[7] += seven;
+					remainders[7] %= MOD;
 					break;
 				
 				case 2:
 					remainders[0] += three;
 					remainders[0] %= MOD;
 					remainders[0] += seven;
+					remainders[0] %= MOD;
 					remainders[2] += zero;
 					remainders[2] %= MOD;
 					remainders[2] += four;
+					remainders[2] %= MOD;
 					remainders[4] += one;
 					remainders[4] %= MOD;
 					remainders[4] += five;
+					remainders[4] %= MOD;
 					remainders[6] += two;
 					remainders[6] %= MOD;
 					remainders[6] += six;
+					remainders[6] %= MOD;
 					break;
 				
 				case 3:
 					remainders[1] += three;
 					remainders[1] %= MOD;
 					remainders[1] += seven;
+					remainders[1] %= MOD;
 					remainders[3] += zero;
 					remainders[3] %= MOD;
 					remainders[3] += four;
+					remainders[3] %= MOD;
 					remainders[5] += one;
 					remainders[5] %= MOD;
 					remainders[5] += five;
+					remainders[5] %= MOD;
 					remainders[7] += two;
 					remainders[7] %= MOD;
 					remainders[7] += six;
+					remainders[7] %= MOD;
 					break;
 					
 				case 4:
 					remainders[0] += two;
 					remainders[0] %= MOD;
 					remainders[0] += six;
+					remainders[0] %= MOD;
 					remainders[2] += three;
 					remainders[2] %= MOD;
 					remainders[2] += seven;
+					remainders[2] %= MOD;
 					remainders[4] += zero;
 					remainders[4] %= MOD;
 					remainders[4] += four;
+					remainders[4] %= MOD;
 					remainders[6] += one;
 					remainders[6] %= MOD;
 					remainders[6] += five;
+					remainders[6] %= MOD;
 					break;	
 					
 				case 5:
 					remainders[1] += two;
 					remainders[1] %= MOD;
 					remainders[1] += six;
+					remainders[1] %= MOD;
 					remainders[3] += three;
 					remainders[3] %= MOD;
 					remainders[3] += seven;
+					remainders[3] %= MOD;
 					remainders[5] += zero;
 					remainders[5] %= MOD;
 					remainders[5] += four;
+					remainders[5] %= MOD;
 					remainders[7] += one;
 					remainders[7] %= MOD;
 					remainders[7] += five;
+					remainders[7] %= MOD;
 					break;
 					
 				case 6:
 					remainders[0] += one;
 					remainders[0] %= MOD;
 					remainders[0] += five;
+					remainders[0] %= MOD;
 					remainders[2] += two;
 					remainders[2] %= MOD;
 					remainders[2] += six;
+					remainders[2] %= MOD;
 					remainders[4] += three;
 					remainders[4] %= MOD;
 					remainders[4] += seven;
+					remainders[4] %= MOD;
 					remainders[6] += zero;
 					remainders[6] %= MOD;
 					remainders[6] += four;
+					remainders[6] %= MOD;
 					break;	
 					
 				case 7:
 					remainders[1] += one;
 					remainders[1] %= MOD;
 					remainders[1] += five;
+					remainders[1] %= MOD;
 					remainders[3] += two;
 					remainders[3] %= MOD;
 					remainders[3] += six;
+					remainders[3] %= MOD;
 					remainders[5] += three;
 					remainders[5] %= MOD;
 					remainders[5] += seven;
+					remainders[5] %= MOD;
 					remainders[7] += zero;
 					remainders[7] %= MOD;
 					remainders[7] += four;
+					remainders[7] %= MOD;
 					break;
 			}
 			for(int c = 0; c < 8; c++) {
