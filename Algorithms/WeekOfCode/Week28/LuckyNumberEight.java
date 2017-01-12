@@ -2,6 +2,10 @@ package WeekOfCode.Week28;
 
 import java.util.Scanner;
 
+/**
+ *	Algorithms -> Week of Code 28 -> Lucky Number Eight
+ *	Medium
+ */
 public class LuckyNumberEight {
 	
 	private static long mod = 1000000007;

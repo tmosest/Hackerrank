@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 /**
  *	Algorithms -> Week of Code 28 -> The Great XOR
- *	Easy
+ *	Medium
  */
 public class TheGreatXOR {
 
