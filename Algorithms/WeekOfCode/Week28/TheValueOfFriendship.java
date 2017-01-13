@@ -47,7 +47,7 @@ public class TheValueOfFriendship {
 				int node2 = in.nextInt() - 1;
 				fc.addEdge(node1, node2);
 			}
-			System.out.println(fc.printLongTotal());
+			System.out.println(fc.printTotal());
 			fc = null;
 		}
 		
@@ -83,14 +83,14 @@ public class TheValueOfFriendship {
 		
 		private void calculateLongTotal()
 		{
-			int[] counts = uf.getCounts();
+			long[] counts = uf.getCounts();
 			Arrays.sort(counts);
 			
 			long holder = 0;
 			
 			int i = counts.length - 1;
 			while(counts[i] > 0) {
-				int count = counts[i];
+				long count = counts[i];
 				
 				long sum = gaussFormala(count - 1);
 				long lastTerm = count * (count - 1);
@@ -105,13 +105,49 @@ public class TheValueOfFriendship {
 			longTotal += repeats * holder;
 		}
 		
-		private long gaussFormala(int n)
+		private void calculateTotal()
+		{
+			long[] counts = uf.getCounts();
+			Arrays.sort(counts);
+			
+			BigInteger holder = BigInteger.ZERO;
+			
+			int i = counts.length - 1;
+			while(counts[i] > 0) {
+				BigInteger count = new BigInteger(String.valueOf(counts[i]));
+				BigInteger countMinusOne = count.subtract(BigInteger.ONE);
+				BigInteger sum = gaussFormalaBig(countMinusOne);
+				
+				BigInteger lastTerm = count.multiply(countMinusOne);
+				
+				if(debugMode)
+					System.out.println("sum: " + sum + " lastTerm: " + lastTerm + " holder: " + holder + " total: " + total);
+
+				total = total.add(holder.multiply(countMinusOne)).add(sum);
+				holder = holder.add(lastTerm);
+				i--;
+			}
+			BigInteger reps = new BigInteger(String.valueOf(repeats));
+			total = total.add(reps.multiply(holder));
+		}
+		
+		private long gaussFormala(long n)
 		{
 			return ((n) * (n + 1) * (n + 2)) / 3;
 		}
 		
+		private BigInteger gaussFormalaBig(BigInteger n) {
+			BigInteger two = new BigInteger("2");
+			BigInteger three = new BigInteger("3");
+			n = n.multiply(n.add(BigInteger.ONE)).multiply(n.add(two));
+			return n.divide(three);
+		}
+		
 		public BigInteger printTotal()
-		{	return this.total; 	}
+		{	
+			calculateTotal();
+			return this.total; 	
+		}
 		
 		public long printLongTotal()
 		{ 
@@ -120,83 +156,12 @@ public class TheValueOfFriendship {
 		}
 	}
 	
-	private static class FriendCounter
-	{
-		private long total;
-		private HashSet<Integer>[] bags;
-		private HashMap<Integer, HashSet<Integer>> distinctBags;
-		
-		public FriendCounter(int nodes)
-		{
-			total = 0;
-			bags = new HashSet[nodes];
-			distinctBags = new HashMap<Integer, HashSet<Integer>>();
-			
-			if(debugMode)
-				System.out.println("Set total to 0");
-			for(int i = 0; i < nodes; i++)
-			{
-				if(debugMode)
-					System.out.println("init node: " + i);
-				HashSet<Integer> s = new HashSet<Integer>();
-				if(debugMode)
-					System.out.println("Created HashSet: " + s);
-				s.add(i);
-				if(debugMode)
-					System.out.println("Added i: " + i + " to HashSet: " + s);
-				bags[i] = s;
-				distinctBags.put(i, s);
-			}
-		}
-		
-		public void addEdge(int node1, int node2)
-		{
-			HashSet s1 = bags[node1];
-			HashSet s2 = bags[node2];
-			
-			if(debugMode)
-				System.out.println("node1: " + node1 + " : " + s1 + " node2: " + node2 + " : " + s2);
-			
-			//if s1 == s2 then all we need to do is sum the totals again.
-			if(s1 != s2) {
-				//else check the sizes
-				if(s1.size() < s2.size()) {
-					s2.addAll(s1);
-					bags[node1] = s2;
-					s1 = null;
-					distinctBags.put(node1, null);
-				} else {
-					s1.addAll(s2);
-					bags[node2] = s1;
-					s2 = null;
-					distinctBags.put(node2, null);
-				}
-			}
-			
-            long sum = 0;
-			for(int key : distinctBags.keySet()) {
-				int bagSize = (distinctBags.get(key) == null) ? 0 : distinctBags.get(key).size();
-				sum += (bagSize * (bagSize - 1));
-				if(debugMode)
-					System.out.println("set: " + key + " : " + bagSize);
-			}
-            if(debugMode)
-                System.out.println(sum);
-            total += sum;
-		}
-		
-		public long printTotal()
-		{
-			return this.total;
-		}
-	}
-	
 	public static class WeightedQuickUnionPathHalvingUF {
 	    private int[] parent;  // parent[i] = parent of i
 	    private int[] size;    // size[i] = number of sites in tree rooted at i
 	                           // Note: not necessarily correct if i is not a root node
 	    private int count;     // number of components
-	    private int[] counts;
+	    private long[] counts;
 	    
 	    /**
 	     * Initializes an empty union–find data structure with {@code n} sites
@@ -210,7 +175,7 @@ public class TheValueOfFriendship {
 	        count = n;
 	        parent = new int[n];
 	        size = new int[n];
-	        counts = new int[n];
+	        counts = new long[n];
 	        for (int i = 0; i < n; i++) {
 	            parent[i] = i;
 	            size[i] = 1;
@@ -279,8 +244,8 @@ public class TheValueOfFriendship {
 	    		System.out.println(p + " : " + q);
 	        int rootP = find(p);
 	        int rootQ = find(q);
-	        int countP = counts[rootP];
-	        int countQ = counts[rootQ];
+	        long countP = counts[rootP];
+	        long countQ = counts[rootQ];
 	        if(debugMode) 
 	    		System.out.println(rootP + " : " + rootQ);
 	        if (rootP == rootQ) return;
@@ -302,7 +267,7 @@ public class TheValueOfFriendship {
 	        count--;
 	    }
 	    
-	    public int[] getCounts()
+	    public long[] getCounts()
 	    {
 	    	return counts;
 	    }
@@ -318,7 +283,7 @@ public class TheValueOfFriendship {
 	    		System.out.print(s + " ");
 	    	}
 	    	System.out.println("\nCounts:");
-	    	for(int s : counts) {
+	    	for(long s : counts) {
 	    		System.out.print(s + " ");
 	    	}
 	    	System.out.println("");
