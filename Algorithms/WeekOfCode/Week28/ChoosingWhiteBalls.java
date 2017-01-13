@@ -29,7 +29,6 @@ public class ChoosingWhiteBalls {
 	
 	public static void main(String[] args)
 	{
-		/*
 		Scanner in = new Scanner(System.in);
 		
 		int n = in.nextInt();
@@ -43,8 +42,8 @@ public class ChoosingWhiteBalls {
 		DecimalFormat df = new DecimalFormat("0.000000");
 		
 		System.out.println(df.format(exp));
-		*/
-		runTests();
+		
+		//runTests();
 	}
 	
 	public static double calculateExpectedValue(String balls, int k)
@@ -66,10 +65,9 @@ public class ChoosingWhiteBalls {
 			if(ithW || jthW) count += 2;
 			if(i == j && ithW)
 				if(ithW) count--; //decrement over counting
-			
-			if(ithW == jthW &&  i != j) {
+						
+			if(i != j) {
 				//generate two sub strings
-				
 				if(k > 1) {
 					StringBuilder sb = new StringBuilder(balls.length() - 1);
 					StringBuilder sb2 = new StringBuilder(balls.length() - 1);
@@ -81,6 +79,13 @@ public class ChoosingWhiteBalls {
 					String s2 = sb2.toString();
 					double small = calculateExpectedValue(s, k - 1);
 					double small2 = calculateExpectedValue(s2, k - 1);
+					double holder1 = (ithW) ? 1.0 : 0.0;
+					double holder2 = (jthW) ? 1.0 : 0.0;
+					if(small + holder1 > small2 + holder2) {
+						small2 = small;
+					} else {
+						small = small2;
+					}
 					sec += (small / balls.length());
 					sec += (small2 / balls.length());
 					if(debugMode) {
@@ -102,14 +107,9 @@ public class ChoosingWhiteBalls {
 					}
 					String s = sb.toString();
 					double small = calculateExpectedValue(s, k - 1);
-					if(i != j)
-						small *= 2;
 					sec += (small / balls.length());
 					if(debugMode)
-						if(i == j)
 							System.out.println(s + " small: " + small + " small/length: " + small/balls.length());
-						else
-							System.out.println(s + " (2) small: " + small + " small/length: " + small/balls.length());
 				}
 				//end if k > 1
 			} //end else
