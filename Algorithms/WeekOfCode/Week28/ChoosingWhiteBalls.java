@@ -13,6 +13,15 @@ import java.util.Scanner;
 	5 3 WBWBW -> 2.1666666
 	
 	5 3 WWWBW -> 2.9
+	
+	4 2 WWBW -> 1.8333333333333333
+	
+	8 4 WBBWWWBB -> 2.7809523809523813 or 1.5714285714285714 if you choose white over black
+	
+	Removing the far right B leaves you with WBBWWWB, from which you can remove an expected 2.6380952380952385 white balls. 
+	Removing the far left W leaves you with BBWWWBB, from which you can only remove an expected 1.5714285714285714 white balls, 
+	or 2.5714285714285714 if you include the first W.
+	There are actually quite a lot of these. Also, I don't think you can save much time by pretending they don't exist.
  */
 public class ChoosingWhiteBalls {
 
@@ -20,7 +29,7 @@ public class ChoosingWhiteBalls {
 	
 	public static void main(String[] args)
 	{
-		
+		/*
 		Scanner in = new Scanner(System.in);
 		
 		int n = in.nextInt();
@@ -30,89 +39,92 @@ public class ChoosingWhiteBalls {
 		
 		in.close();
 		
-		double exp = calculateExpectedValue(balls, k, 1);
+		double exp = calculateExpectedValue(balls, k);
 		DecimalFormat df = new DecimalFormat("0.000000");
 		
 		System.out.println(df.format(exp));
-		
-		//runTests();
+		*/
+		runTests();
 	}
 	
-	public static double calculateExpectedValue(String balls, int k, double expCount)
+	public static double calculateExpectedValue(String balls, int k)
 	{
 		if(debugMode) 
-			System.out.println("balls: " + balls + " k: " + k + " exp: " + expCount);
+			System.out.println("\nBalls: " + balls + " k: " + k);
 		
-		HashMap<String, Double> counts = new HashMap<String, Double>();
-		
-		double total = 0.0;
 		double count = 0.0;
 		double sec = 0.0;
-		for(int i = 0; i < balls.length(); i++) {
-			total++;
-			int j;
-			if(balls.charAt(i) == 'W' || balls.charAt(balls.length() - i - 1) == 'W') {
-				count++;
-				if(balls.charAt(i) == 'W') {
-					j = i;
-				} else {
-					j = balls.length() - i - 1;
-					
-				}
-				if(k > 1) {
-					StringBuilder sb = new StringBuilder(balls.length() - 1);
-					for(int s = 0; s < balls.length(); s++) {
-						if(s != j) sb.append(balls.charAt(s));
-					}
-					String s = sb.toString();
-					double sCount = (counts.get(s) == null) ? 0 : counts.get(s);
-					counts.put(s, ++sCount);
-					double small = calculateExpectedValue(s, k - 1, 1);
-					sec += small / balls.length();
-					if(debugMode)
-						System.out.println(sb.toString() + " : " + small);
-				}
-			} else {
+		
+		int i = 0;
+		int j = balls.length() - 1;
+		while(i <= j) {
+			if(debugMode)
+				System.out.println("i: " + i + " j: " + j);
+			boolean ithW = balls.charAt(i) == 'W';
+			boolean jthW = balls.charAt(j) == 'W';
+			
+			if(ithW || jthW) count += 2;
+			if(i == j && ithW)
+				if(ithW) count--; //decrement over counting
+			
+			if(ithW == jthW &&  i != j) {
+				//generate two sub strings
+				
 				if(k > 1) {
 					StringBuilder sb = new StringBuilder(balls.length() - 1);
 					StringBuilder sb2 = new StringBuilder(balls.length() - 1);
 					for(int s = 0; s < balls.length(); s++) {
 						if(s != i) sb.append(balls.charAt(s));
-						if(s != balls.length() - i - 1) sb2.append(balls.charAt(s));
+						if(s != j) sb2.append(balls.charAt(s));
 					}
 					String s = sb.toString();
-					String s2 = sb.toString();
-					double sCount = (counts.get(s) == null) ? 0 : counts.get(s);
-					counts.put(s, ++sCount);
-					sCount = (counts.get(s2) == null) ? 0 : counts.get(s2);
-					counts.put(s, ++sCount);
-					double small = calculateExpectedValue(s, k - 1, 1);
-					double small2 = calculateExpectedValue(s2, k - 1, 1);
-					sec += small / balls.length();
-					sec += small2 / balls.length();
-					if(debugMode)
-						System.out.println(sb.toString() + " : " + small);
+					String s2 = sb2.toString();
+					double small = calculateExpectedValue(s, k - 1);
+					double small2 = calculateExpectedValue(s2, k - 1);
+					sec += (small / balls.length());
+					sec += (small2 / balls.length());
+					if(debugMode) {
+						System.out.println(s + " small: " + small + " small/length: " + small/balls.length());
+						System.out.println(s2 + " small2: " + small2 + " small2/length: " + small2/balls.length());
+					}
 				}
-			}
+				
+			} else {
+				//generate one sub string,
+				//could be i or j depending on who is W or it could be the middle.
+				int index = i;
+				if(jthW) index = j;
+				
+				if(k > 1) {
+					StringBuilder sb = new StringBuilder(balls.length() - 1);
+					for(int s = 0; s < balls.length(); s++) {
+						if(s != index) sb.append(balls.charAt(s));
+					}
+					String s = sb.toString();
+					double small = calculateExpectedValue(s, k - 1);
+					if(i != j)
+						small *= 2;
+					sec += (small / balls.length());
+					if(debugMode)
+						if(i == j)
+							System.out.println(s + " small: " + small + " small/length: " + small/balls.length());
+						else
+							System.out.println(s + " (2) small: " + small + " small/length: " + small/balls.length());
+				}
+				//end if k > 1
+			} //end else
+			
+			i++;
+			j--;
 		}
 		
-		k--;
+		if(debugMode)
+			System.out.println("count: " + count + " length:" + balls.length());
+		double res = (count / balls.length()) + sec;
 		
-		double smallers = 0.0;
-		if(k != 0 && count > 0.0) {
-			for(String s : counts.keySet()) {
-				double e = calculateExpectedValue(s, k, counts.get(s) / total);
-				smallers += e;
-				if(debugMode)
-					System.out.println(s + " count: " + counts.get(s) + " e: " + e + " smallers: " + smallers);
-			}
-		}
-		if(count < 1.0) total = 1.0;
-		
-		double res = expCount * (count / total) + sec;
-		System.out.println("res" + res);
+		if(debugMode)
+			System.out.println("res: " + res);
 		return res;
-		//return expCount * (count / total) + expCount * smallers;
 	}
 	
 	public static void runTests() {
@@ -129,7 +141,7 @@ public class ChoosingWhiteBalls {
          
         // Base case: k is 0, print prefix
         if (k == 0) {
-        	double exp = calculateExpectedValue(prefix, j, 1);
+        	double exp = calculateExpectedValue(prefix, j);
             System.out.println(prefix + " : " + j + " : " + exp);
             return;
         }
