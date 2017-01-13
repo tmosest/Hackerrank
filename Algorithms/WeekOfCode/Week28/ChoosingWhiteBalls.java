@@ -1,17 +1,26 @@
 package WeekOfCode.Week28;
 
+import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.Scanner;
 
 /**
  *	Algorithms -> Week of Code 28 -> Choosing White Balls
  *	Hard
+
+	5 2 WBWBW -> 1.5
+	
+	5 3 WBWBW -> 2.1666666
+	
+	5 3 WWWBW -> 2.9
  */
 public class ChoosingWhiteBalls {
 
-	private static boolean debugMode = true;
+	private static boolean debugMode = false;
 	
 	public static void main(String[] args)
 	{
+		
 		Scanner in = new Scanner(System.in);
 		
 		int n = in.nextInt();
@@ -22,28 +31,67 @@ public class ChoosingWhiteBalls {
 		in.close();
 		
 		double exp = calculateExpectedValue(balls, k, 1);
-		System.out.println(exp);
+		DecimalFormat df = new DecimalFormat("0.000000");
+		
+		System.out.println(df.format(exp));
+		
 		//runTests();
 	}
 	
-	public static double calculateExpectedValue(String balls, int k, int expCount)
+	public static double calculateExpectedValue(String balls, int k, double expCount)
 	{
 		if(debugMode) 
-			System.out.println(balls);
+			System.out.println("balls: " + balls + " k: " + k + " exp: " + expCount);
 		
-		int[] counts = new int[balls.length()];
+		HashMap<String, Double> counts = new HashMap<String, Double>();
 		
 		double total = 0.0;
 		double count = 0.0;
-		
+		double sec = 0.0;
 		for(int i = 0; i < balls.length(); i++) {
 			total++;
+			int j;
 			if(balls.charAt(i) == 'W' || balls.charAt(balls.length() - i - 1) == 'W') {
 				count++;
 				if(balls.charAt(i) == 'W') {
-					counts[i]++;
+					j = i;
 				} else {
-					counts[balls.length() - i - 1]++;
+					j = balls.length() - i - 1;
+					
+				}
+				if(k > 1) {
+					StringBuilder sb = new StringBuilder(balls.length() - 1);
+					for(int s = 0; s < balls.length(); s++) {
+						if(s != j) sb.append(balls.charAt(s));
+					}
+					String s = sb.toString();
+					double sCount = (counts.get(s) == null) ? 0 : counts.get(s);
+					counts.put(s, ++sCount);
+					double small = calculateExpectedValue(s, k - 1, 1);
+					sec += small / balls.length();
+					if(debugMode)
+						System.out.println(sb.toString() + " : " + small);
+				}
+			} else {
+				if(k > 1) {
+					StringBuilder sb = new StringBuilder(balls.length() - 1);
+					StringBuilder sb2 = new StringBuilder(balls.length() - 1);
+					for(int s = 0; s < balls.length(); s++) {
+						if(s != i) sb.append(balls.charAt(s));
+						if(s != balls.length() - i - 1) sb2.append(balls.charAt(s));
+					}
+					String s = sb.toString();
+					String s2 = sb.toString();
+					double sCount = (counts.get(s) == null) ? 0 : counts.get(s);
+					counts.put(s, ++sCount);
+					sCount = (counts.get(s2) == null) ? 0 : counts.get(s2);
+					counts.put(s, ++sCount);
+					double small = calculateExpectedValue(s, k - 1, 1);
+					double small2 = calculateExpectedValue(s2, k - 1, 1);
+					sec += small / balls.length();
+					sec += small2 / balls.length();
+					if(debugMode)
+						System.out.println(sb.toString() + " : " + small);
 				}
 			}
 		}
@@ -52,39 +100,37 @@ public class ChoosingWhiteBalls {
 		
 		double smallers = 0.0;
 		if(k != 0 && count > 0.0) {
-			for(int i = 0; i < counts.length; i++) {
-				if(counts[i] > 0) {
-					StringBuilder sb = new StringBuilder(counts.length - 1);
-					for(int s = 0; s < balls.length(); s++) {
-						if(s != i) sb.append(balls.charAt(s));
-					}
-					if(debugMode)
-						System.out.println(sb.toString());
-					smallers += calculateExpectedValue(sb.toString(), k, counts[i]);
-				}
+			for(String s : counts.keySet()) {
+				double e = calculateExpectedValue(s, k, counts.get(s) / total);
+				smallers += e;
+				if(debugMode)
+					System.out.println(s + " count: " + counts.get(s) + " e: " + e + " smallers: " + smallers);
 			}
 		}
 		if(count < 1.0) total = 1.0;
 		
-		return (1.0 / expCount) * (count / total) + smallers;
+		double res = expCount * (count / total) + sec;
+		System.out.println("res" + res);
+		return res;
+		//return expCount * (count / total) + expCount * smallers;
 	}
 	
 	public static void runTests() {
 		System.out.println("Tests:");
         char set1[] = {'W', 'B'};
         for(int i = 1; i < 30; i++) {
-        	System.out.println("Size: " + i);
-        	printSubStringsWithProbability(set1, "", set1.length, i);
+        	for(int j = 1; j <= i; j++)
+        		printSubStringsWithProbability(set1, "", set1.length, i, j);
         }
 	}
 	
 	// The main recursive method to print all possible strings of length k
-    public static void printSubStringsWithProbability(char set[], String prefix, int n, int k) {
+    public static void printSubStringsWithProbability(char set[], String prefix, int n, int k, int j) {
          
         // Base case: k is 0, print prefix
         if (k == 0) {
-        	double exp = calculateExpectedForOnePick(prefix);
-            System.out.println(prefix + " : " + exp);
+        	double exp = calculateExpectedValue(prefix, j, 1);
+            System.out.println(prefix + " : " + j + " : " + exp);
             return;
         }
  
@@ -96,7 +142,7 @@ public class ChoosingWhiteBalls {
             String newPrefix = prefix + set[i]; 
              
             // k is decreased, because we have added a new character
-            printSubStringsWithProbability(set, newPrefix, n, k - 1); 
+            printSubStringsWithProbability(set, newPrefix, n, k - 1, j); 
         }
     }
     
