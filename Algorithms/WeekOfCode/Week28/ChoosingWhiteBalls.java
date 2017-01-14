@@ -63,31 +63,22 @@ public class ChoosingWhiteBalls {
 		String balls = in.next();
 		int ballsInt = convertStringToBits(balls);
 		
-		//System.out.println(Integer.toBinaryString(ballsInt));
-		//System.out.println(Integer.toBinaryString(reverseBits(ballsInt, n)));
-		//System.out.println(getNthBit(ballsInt, 0));
-		//System.out.println(Integer.toBinaryString(removeIthBit(ballsInt, 1, n)));
-		
 		if(timeMode) {
 			startTime = System.currentTimeMillis();
 		}
 		
 		computedHolderMem = new TreeMap[balls.length() + 1];
-		//computedHolder = new TreeMap[balls.length() + 1];
 		
 		for(int i = 0; i <= balls.length(); i++) {
-			//computedHolder[i] = new TreeMap<String, Double>();
 			computedHolderMem[i] = new TreeMap<Integer, Double>();
 		}
 		
 		in.close();
 		
-		//double exp = calculateExpectedValue(balls, k);
 		double exp2 = calculateExpectedValueByte(ballsInt, k , n);
 		
 		DecimalFormat df = new DecimalFormat("0.000000");
 		
-		//System.out.println(df.format(exp));
 		System.out.println(df.format(exp2));
 		
 		if(timeMode) {
@@ -104,6 +95,13 @@ public class ChoosingWhiteBalls {
 		//runTests();
 	}
 	
+	/**
+	 * Take a number x where you can about the last n bits and flips the shifts.
+	 * So (1101, 4) returns 1011.
+	 * @param x the integer that you want to reverse
+	 * @param n the length from 1 to nth digit to shift to.
+	 * @return
+	 */
 	private static int reverseBits(int x, int n)
 	{
 		x = ((x&0xAAAAAAAA) >> 1)| ((x& 0x55555555) << 1);
@@ -116,6 +114,12 @@ public class ChoosingWhiteBalls {
 		return x;
 	}
 	
+	/**
+	 * Takes a String of W's and B's and converts them to a binary number.
+	 * WB -> 10.
+	 * @param s A string of B's and W's
+	 * @return 1 for W and 0 for B
+	 */
 	private static int convertStringToBits(String s)
 	{
 		int i = 0;
@@ -131,6 +135,14 @@ public class ChoosingWhiteBalls {
 		return i;
 	}
 	
+	/**
+	 * Returns the value of the nth bit in a value.
+	 * This starts from the least significant digit.
+	 * 
+	 * @param value the number you want to get the nth bit from.
+	 * @param n the nth bit.
+	 * @return
+	 */
 	private static int getNthBit(int value, int n)
 	{
 		return (value >> n) & 1; // Another common approach is int bitN = (value >> n) & 1;
@@ -145,20 +157,34 @@ public class ChoosingWhiteBalls {
 	    return rightShifted & mask;
 	}
 	
+	/**
+	 * Removes the ith bit from a number by masking the ones less than it 
+	 * and shifting the ones greater down onto it
+	 * 
+	 * @param value the integer you want to remove a bit from
+	 * @param i the ith bit you want to get rid of.
+	 * @param n the total size of bits you care about from least significant.
+	 * @return
+	 */
 	public static int removeIthBit(final int value, final int i, final int n)
 	{
 		final int mask = (1 << i) - 1; //To turn on all bits in a set of size n
 		final int mask2 = (1 << n) - 1;
 		final int mask3 = (mask ^ mask2) << 1; 
-		//System.out.println(Integer.toBinaryString(mask));
-		//System.out.println(Integer.toBinaryString(mask2));
-		//System.out.println(Integer.toBinaryString(mask3));
-		//System.out.println(Integer.toBinaryString((value & mask3) >>> 1));
 		return (((value & mask3) >>> 1) + (value & mask)) & mask2;
 	}
-		
+	
+	// D.P. Data Structure
 	private static TreeMap<Integer, Double>[] computedHolderMem;
 	
+	/**
+	 * The bread an butter of this challenge.
+	 * This a recursive algorithm that calculate the expected value for a ball int of size n with k deletions. 
+	 * @param balls an int that represents the string BWWWBWB
+	 * @param k the number of deletions.
+	 * @param n the number of balls.
+	 * @return
+	 */
 	public static double calculateExpectedValueByte(int balls, int k, int n)
 	{
 		TreeMap<Integer, Double> mem = computedHolderMem[n];
@@ -226,223 +252,11 @@ public class ChoosingWhiteBalls {
 		double res = (count / n) + sec;
 		
 		mem.put(balls, res);
-		//mem.put(reverseBits(balls, n), res);
+		mem.put(reverseBits(balls, n), res);
 		computedHolderMem[n] = mem;
 		
 		if(debugMode)
 			System.out.println("res: " + res);
 		return res;
-	}
-	
-	private static TreeMap<String, Double>[] computedHolder;
-	//private static TreeMap<String, Double> computedValues = new TreeMap<String, Double>();
-	
-	
-	public static double calculateExpectedValue(String balls, int k) throws IOException
-	{
-		if(debugMode) 
-			System.out.println("\nBalls: " + balls + " k: " + k);
-		
-		if(writeMode) {
-			bufferedWriter.write("\nBalls: " + balls + " k: " + k);
-	        bufferedWriter.newLine();
-		}
-		
-		TreeMap<String, Double> computedValues = computedHolder[balls.length()];
-		
-		if(computedValues.get(balls) != null)
-			return computedValues.get(balls);
-		
-		double count = 0.0;
-		double sec = 0.0;
-				
-		int i = 0;
-		int j = balls.length() - 1;
-		while(i <= j) {
-			if(debugMode)
-				System.out.println("i: " + i + " j: " + j);
-			boolean ithW = balls.charAt(i) == 'W';
-			boolean jthW = balls.charAt(j) == 'W';
-			
-			if(ithW || jthW) count += 2;
-			if(i == j && ithW)
-				if(ithW) count--; //decrement over counting
-						
-			if(i != j) {
-				//generate two sub strings
-				if(k > 1) {
-					StringBuilder sb = new StringBuilder(balls.length() - 1);
-					StringBuilder sb2 = new StringBuilder(balls.length() - 1);
-					for(int s = 0; s < balls.length(); s++) {
-						if(s != i) sb.append(balls.charAt(s));
-						if(s != j) sb2.append(balls.charAt(s));
-					}
-					String s = sb.toString();
-					String s2 = sb2.toString();
-					double small = calculateExpectedValue(s, k - 1);
-					double small2 = calculateExpectedValue(s2, k - 1);
-					double holder1 = (ithW) ? 1.0 : 0.0;
-					double holder2 = (jthW) ? 1.0 : 0.0;
-					if(small + holder1 > small2 + holder2) {
-						small2 = small;
-					} else {
-						small = small2;
-					}
-					sec += (small / balls.length());
-					sec += (small2 / balls.length());
-					if(debugMode) {
-						System.out.println(s + " small: " + small + " small/length: " + small/balls.length());
-						System.out.println(s2 + " small2: " + small2 + " small2/length: " + small2/balls.length());
-					}
-					if(writeMode) {
-						bufferedWriter.write(s + " small: " + small + " small/length: " + small/balls.length());
-				        bufferedWriter.newLine();
-				        bufferedWriter.write(s2 + " small2: " + small2 + " small2/length: " + small2/balls.length());
-				        bufferedWriter.newLine();
-					}
-				}
-				
-			} else {
-				//generate one sub string,
-				//could be i or j depending on who is W or it could be the middle.
-				int index = i;
-				if(jthW) index = j;
-				
-				if(k > 1) {
-					StringBuilder sb = new StringBuilder(balls.length() - 1);
-					for(int s = 0; s < balls.length(); s++) {
-						if(s != index) sb.append(balls.charAt(s));
-					}
-					String s = sb.toString();
-					double small = calculateExpectedValue(s, k - 1);
-					sec += (small / balls.length());
-					if(debugMode)
-							System.out.println(s + " small: " + small + " small/length: " + small/balls.length());
-					if(writeMode) {
-						bufferedWriter.write(s + " small: " + small + " small/length: " + small/balls.length());
-				        bufferedWriter.newLine();
-					}
-				}
-				//end if k > 1
-			} //end else
-			
-			i++;
-			j--;
-		}
-		
-		if(debugMode)
-			System.out.println("count: " + count + " length:" + balls.length());
-		if(writeMode) {
-			bufferedWriter.write("count: " + count + " length:" + balls.length());
-	        bufferedWriter.newLine();
-		}
-		double res = (count / balls.length()) + sec;
-		
-		computedValues.put(balls, res);
-		
-		StringBuilder sb = new StringBuilder(balls);
-		sb.reverse();
-		computedValues.put(sb.toString(), res);
-		
-		computedHolder[balls.length()] = computedValues;
-		
-		if(debugMode)
-			System.out.println("res: " + res);
-		if(writeMode) {
-			bufferedWriter.write("res: " + res);
-	        bufferedWriter.newLine();
-		}
-		return res;
-	}
-	
-	public static void runTests() throws IOException {
-		System.out.println("Tests:");
-        char set1[] = {'W', 'B'};
-        for(int i = 1; i < 30; i++) {
-        	for(int j = 1; j <= i; j++)
-        		printSubStringsWithProbability(set1, "", set1.length, i, j);
-        }
-	}
-	
-	// The main recursive method to print all possible strings of length k
-    public static void printSubStringsWithProbability(char set[], String prefix, int n, int k, int j) throws IOException {
-         
-        // Base case: k is 0, print prefix
-        if (k == 0) {
-        	double exp = calculateExpectedValue(prefix, j);
-            System.out.println(prefix + " : " + j + " : " + exp);
-            return;
-        }
- 
-        // One by one add all characters from set and recursively 
-        // call for k equals to k-1
-        for (int i = 0; i < n; ++i) {
-             
-            // Next character of input added
-            String newPrefix = prefix + set[i]; 
-             
-            // k is decreased, because we have added a new character
-            printSubStringsWithProbability(set, newPrefix, n, k - 1, j); 
-        }
-    }
-    
-    public static double calculateExpectedForOnePick(String balls)
-    {
-    	double total = 0.0;
-		double count = 0.0;
-    	
-		for(int i = 0; i < balls.length(); i++) {
-			total++;
-			if(balls.charAt(i) == 'W' || balls.charAt(balls.length() - i - 1) == 'W') {
-				count++;
-			}
-		}
-		
-    	return count / total;
-    }
-	
-	// Java program to print all possible strings of length k
-	public static class PrintAllKLengthStrings {
-	 
-	    // Driver method to test below methods
-	    public static void main(String[] args) {             
-	        System.out.println("First Test");
-	        char set1[] = {'a', 'b'};
-	        int k = 3;
-	        printAllKLength(set1, k);
-	         
-	        System.out.println("\nSecond Test");
-	        char set2[] = {'a', 'b', 'c', 'd'};
-	        k = 1;
-	        printAllKLength(set2, k);        
-	    }    
-	 
-	    // The method that prints all possible strings of length k.  It is
-	    //  mainly a wrapper over recursive function printAllKLengthRec()
-	    public static void printAllKLength(char set[], int k) {
-	        int n = set.length;        
-	        printAllKLengthRec(set, "", n, k);
-	    }
-	 
-	    // The main recursive method to print all possible strings of length k
-	    public static void printAllKLengthRec(char set[], String prefix, int n, int k) {
-	         
-	        // Base case: k is 0, print prefix
-	        if (k == 0) {
-	            System.out.println(prefix);
-	            return;
-	        }
-	 
-	        // One by one add all characters from set and recursively 
-	        // call for k equals to k-1
-	        for (int i = 0; i < n; ++i) {
-	             
-	            // Next character of input added
-	            String newPrefix = prefix + set[i]; 
-	             
-	            // k is decreased, because we have added a new character
-	            printAllKLengthRec(set, newPrefix, n, k - 1); 
-	        }
-	    }
 	}
 }
