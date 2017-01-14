@@ -77,7 +77,7 @@ public class ChoosingWhiteBalls {
 		
 		double exp2 = calculateExpectedValueByte(ballsInt, k , n);
 		
-		DecimalFormat df = new DecimalFormat("0.000000");
+		DecimalFormat df = new DecimalFormat("0.000000000000");
 		
 		System.out.println(df.format(exp2));
 		
