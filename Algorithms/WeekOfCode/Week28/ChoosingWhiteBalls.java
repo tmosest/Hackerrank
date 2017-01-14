@@ -3,6 +3,7 @@ package WeekOfCode.Week28;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 /**
  *	Algorithms -> Week of Code 28 -> Choosing White Balls
@@ -26,6 +27,8 @@ import java.util.Scanner;
 public class ChoosingWhiteBalls {
 
 	private static boolean debugMode = false;
+	private static boolean timeMode = true;
+	static long startTime, endTime;
 	
 	public static void main(String[] args)
 	{
@@ -36,24 +39,189 @@ public class ChoosingWhiteBalls {
 		
 		String balls = in.next();
 		
+		if(timeMode) {
+			startTime = System.currentTimeMillis();
+		}
+		
+		computedHolder = new TreeMap[balls.length() + 1];
+		
+		for(int i = 0; i <= balls.length(); i++) {
+			computedHolder[i] = new TreeMap<String, Double>();
+		}
+		
 		in.close();
 		
 		double exp = calculateExpectedValue(balls, k);
+
 		DecimalFormat df = new DecimalFormat("0.000000");
 		
 		System.out.println(df.format(exp));
 		
+		if(timeMode) {
+			long estimatedTime = System.currentTimeMillis() - startTime;
+			System.out.println("Time: " + estimatedTime);
+		}
+		
+		
 		//runTests();
 	}
+	
+	/*
+	private static TreeMap<Byte[], Double> mem = new TreeMap<Byte[], Double>();
+	
+	public static double calculateExpectedValueByte(byte[] balls, int k)
+	{
+		
+		if(mem.get(balls) != null)
+			return computedValues.get(balls);
+		
+		double count = 0.0;
+		double sec = 0.0;
+		
+		int i = 0;
+		int j = balls.length - 1;
+		while(i <= j) {
+			
+			boolean ithW = balls[i] == 1;
+			boolean jthW = balls[j] == 1;
+			
+			if(ithW || jthW) count += 2;
+			if(i == j && ithW)
+				if(ithW) count--; //decrement over counting
+						
+			if(i != j) {
+				//generate two sub strings
+				if(k > 1) {
+					
+					byte[] b = new byte[b.length - 1];
+					byte[] c = new byte[b.length - 1];
+					
+					boolean isBC = true;
+					boolean isBreverseC = true;
+					
+					int bI = 0;
+					int cI = 0;
+					for(int s = 0; s <= balls.length / 2; s++) {
+						if(s != i) {
+							b[bI] = balls[s];
+						}
+						bI++;
+					}
+					
+					for(int s = 0; s < balls.length(); s++) {
+						if(s != i) sb.append(balls.charAt(s));
+						if(s != j) sb2.append(balls.charAt(s));
+					}
+					String s = sb.toString();
+					String s2 = sb2.toString();
+					double small = calculateExpectedValue(s, k - 1);
+					double small2 = calculateExpectedValue(s2, k - 1);
+					double holder1 = (ithW) ? 1.0 : 0.0;
+					double holder2 = (jthW) ? 1.0 : 0.0;
+					if(small + holder1 > small2 + holder2) {
+						small2 = small;
+					} else {
+						small = small2;
+					}
+					sec += (small / balls.length());
+					sec += (small2 / balls.length());
+					if(debugMode) {
+						System.out.println(s + " small: " + small + " small/length: " + small/balls.length());
+						System.out.println(s2 + " small2: " + small2 + " small2/length: " + small2/balls.length());
+					}
+				}
+				
+			} else {
+				//generate one sub string,
+				//could be i or j depending on who is W or it could be the middle.
+				int index = i;
+				if(jthW) index = j;
+				
+				if(k > 1) {
+					StringBuilder sb = new StringBuilder(balls.length() - 1);
+					for(int s = 0; s < balls.length(); s++) {
+						if(s != index) sb.append(balls.charAt(s));
+					}
+					String s = sb.toString();
+					double small = calculateExpectedValue(s, k - 1);
+					sec += (small / balls.length());
+					if(debugMode)
+							System.out.println(s + " small: " + small + " small/length: " + small/balls.length());
+				}
+				//end if k > 1
+			} //end else
+			
+			i++;
+			j--;
+		}
+		
+		if(debugMode)
+			System.out.println("count: " + count + " length:" + balls.length());
+		double res = (count / balls.length()) + sec;
+		
+		computedValues.put(balls, res);
+		StringBuilder sb = new StringBuilder(balls);
+		sb.reverse();
+		computedValues.put(sb.toString(), res);
+		
+		if(debugMode)
+			System.out.println("res: " + res);
+		return res;
+	}
+	*/
+	
+	private static byte[] convertBallToByte(String s)
+	{
+		byte[] b = new byte[s.length()];
+		
+		for(int i = 0; i < s.length(); i++) {
+			char letter = s.charAt(i);
+			if(letter == 'W')
+				b[i] = 1;
+			else
+				b[i] = 0;
+		}
+		
+		return b;
+	}
+	
+	private static byte[] reverseByteArray(byte[] b)
+	{
+		byte[] c = new byte[b.length];
+		
+		for(int i = 0; i <= b.length / 2; i++) {
+			c[i] = b[b.length - 1 - i];
+			c[b.length - 1 - i] = b[i];
+		}
+		
+		return c;
+	}
+	
+	private static void printByteArray(byte[] b)
+	{
+		System.out.println("");
+		for(byte i : b)
+			System.out.print(i + " ");
+		System.out.println("");
+	}
+	
+	private static TreeMap<String, Double>[] computedHolder;
+	//private static TreeMap<String, Double> computedValues = new TreeMap<String, Double>();
+	
 	
 	public static double calculateExpectedValue(String balls, int k)
 	{
 		if(debugMode) 
 			System.out.println("\nBalls: " + balls + " k: " + k);
 		
+		TreeMap<String, Double> computedValues = computedHolder[balls.length()];
+		
+		if(computedValues.get(balls) != null)
+			return computedValues.get(balls);
+		
 		double count = 0.0;
 		double sec = 0.0;
-		
+				
 		int i = 0;
 		int j = balls.length() - 1;
 		while(i <= j) {
@@ -121,6 +289,14 @@ public class ChoosingWhiteBalls {
 		if(debugMode)
 			System.out.println("count: " + count + " length:" + balls.length());
 		double res = (count / balls.length()) + sec;
+		
+		computedValues.put(balls, res);
+		
+		StringBuilder sb = new StringBuilder(balls);
+		sb.reverse();
+		computedValues.put(sb.toString(), res);
+		
+		computedHolder[balls.length()] = computedValues;
 		
 		if(debugMode)
 			System.out.println("res: " + res);
