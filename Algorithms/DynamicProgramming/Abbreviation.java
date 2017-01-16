@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 public class Abbreviation {
+	
+	private static boolean debugMode = true;
 
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
@@ -14,7 +16,7 @@ public class Abbreviation {
 			String from = in.next();
 			String to = in.next();
 			String res = "NO";
-			if(canTransformInto(from, to))
+			if(canTransformIntoDP(from, to))
 				res = "YES";
 			System.out.println(res);
 		}
@@ -22,6 +24,12 @@ public class Abbreviation {
 		in.close();
 	}
 
+	/**
+	 * This basic method fails b/c it doesn't take into account the order of the character.
+	 * @param from
+	 * @param to
+	 * @return
+	 */
 	public static boolean canTransformInto(String from, String to)
 	{
 		if(from.length() < to.length())
@@ -35,27 +43,60 @@ public class Abbreviation {
 			int count = (toCounts.get(letter) == null) ? 0 : toCounts.get(letter);
 			toCounts.put(letter, ++count);
 			fromCounts.put(letter, count);
-			//System.out.println("letter: " + letter + " count: " + count);
+			if(debugMode)
+				System.out.println("letter: " + letter + " count: " + count);
 		}
 		
 		for(int i = 0; i < from.length(); i++) {
 			char letter = from.charAt(i);
 			int toCount = (toCounts.get(letter) == null) ? 0 : toCounts.get(letter);
-			//System.out.println("letter: " + letter + " toCount: " + toCount);
+			if(debugMode)
+				System.out.println("letter: " + letter + " toCount: " + toCount);
 			//If we have a capital letter in from that is not in to we can't convert.
 			if(letter >= 'A' && letter <= 'Z' && toCount == 0) return false;
 			//Otherwise let's subtract the letter from to's other count
 			letter = Character.toUpperCase(letter);
 			int count = (fromCounts.get(letter) == null) ? 0 : fromCounts.get(letter);
 			fromCounts.put(letter, --count);
-			//System.out.println("letter: " + letter + " fromCount: " + count);
+			if(debugMode)
+				System.out.println("letter: " + letter + " fromCount: " + count);
 		}
 		
 		for(int count : fromCounts.values()) {
-			//System.out.println("fromCount: " + count);
+			if(debugMode)
+				System.out.println("fromCount: " + count);
 			if(count > 0) return false;
 		}
 		
 		return true;
+	}
+	
+	private static int limit = 1011;
+	private static boolean dp[][];
+	public static boolean canTransformIntoDP(String from, String to)
+	{
+		dp = new boolean[limit][limit];
+		
+		dp[0][0] = true;
+		
+		for (int i = 0; i < from.length(); i++) {
+            for (int j = 0; j <= to.length(); j++)
+            	if (dp[i][j]) {
+            		if(j < to.length() && (upcase(from.charAt(i)) == to.charAt(j))) 
+            			dp[i + 1][j + 1] = true;
+            		if(!isUpcase(from.charAt(i))) 
+            			dp[i + 1][j] = true;
+            }
+        }
+		
+		return dp[to.length()][from.length()];
+	}
+	
+	private static boolean isUpcase(char c){
+	    return (c >= 'A') && (c <= 'Z');
+	}
+
+	private static char upcase(char c){
+	    return Character.toUpperCase(c);
 	}
 }
