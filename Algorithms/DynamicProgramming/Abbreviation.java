@@ -3,6 +3,10 @@ package DynamicProgramming;
 import java.util.HashMap;
 import java.util.Scanner;
 
+/**
+ *	Algorithms -> Dynamic Programming -> Abbreviation
+ *	Medium
+ */
 public class Abbreviation {
 	
 	private static boolean debugMode = true;
@@ -71,8 +75,15 @@ public class Abbreviation {
 		return true;
 	}
 	
+	
 	private static int limit = 1011;
 	private static boolean dp[][];
+	/**
+	 * https://www.hackerrank.com/challenges/abbr/editorial
+	 * @param from The string we are trying to transform.
+	 * @param to The string we are to trying to create.
+	 * @return
+	 */
 	public static boolean canTransformIntoDP(String from, String to)
 	{
 		dp = new boolean[limit][limit];
@@ -89,7 +100,7 @@ public class Abbreviation {
             }
         }
 		
-		return dp[to.length()][from.length()];
+		return dp[from.length()][to.length()];
 	}
 	
 	private static boolean isUpcase(char c){
