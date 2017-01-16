@@ -26,14 +26,13 @@ public class SamAndSubStrings {
 		
 		public CountSumOfAllSubStrings(String s)
 		{
-			for(int i = 0; i < s.length(); i++) {
-				for(int j = i + 1; j <= s.length(); j++) {
-					long number = Long.parseLong(s.substring(i, j));
-					number %= mod;
-					sum += number;
-					sum %= mod;
-				}
+			long res = 0;
+			long f = 1;
+			for(int i = s.length() - 1; i >= 0; i--) {
+			    res = (res + (s.charAt(i) - '0') * f * (i+1)) % mod;
+			    f = (f * 10 + 1) % mod;
 			}
+			sum = res;
 		}
 		
 		public long getSum()
