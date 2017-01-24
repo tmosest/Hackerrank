@@ -10,27 +10,36 @@ import java.util.Scanner;
  *
  */
 public class BreakupApp {
-
+	
+	private static boolean debugMode = false;
+	
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
 		
 		int qs = in.nextInt();
+		if(debugMode)
+			System.out.println("qs: " + qs);
 		
 		int[] counts = new int[101];
 		StringBuilder number = new StringBuilder();
 		in.nextLine();
 		for(int q = 0; q < qs; q++) {
 			String s = in.nextLine();
-			System.out.println(s);
+			if(debugMode)
+				System.out.println("q: " + q + " s: " + s);
 			boolean isGirl = (s.charAt(0) == 'G');
-			System.out.println(isGirl);
+			if(debugMode)
+				System.out.println("isGirl: " + isGirl);
 			for(int i = 0; i < s.length(); i++) {
 				char letter = s.charAt(i);
-				//System.out.println(letter);
 				if(letter >= '0' && letter <= '9') {
-					number.append(s);
+					if(debugMode)
+						System.out.println("s: " + letter);
+					number.append(letter);
 					if(i == s.length() - 1) {
 						int num = Integer.valueOf(number.toString());
+						if(debugMode)
+							System.out.println("sb: " + number.toString());
 						counts[num]++;
 						if(isGirl) counts[num]++;
 						number = new StringBuilder();
@@ -38,12 +47,13 @@ public class BreakupApp {
 				} else {
 					if(number.length() > 0) {
 						int num = Integer.valueOf(number.toString());
+						if(debugMode)
+							System.out.println("sb: " + number.toString());
 						counts[num]++;
 						if(isGirl) counts[num]++;
 						number = new StringBuilder();
 					}
 				}
-				System.out.println(number.toString());
 			}
 		}
 		
