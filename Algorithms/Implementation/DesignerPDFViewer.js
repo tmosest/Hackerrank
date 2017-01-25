@@ -19,15 +19,19 @@ function readLine() {
 }
 
 /////////////// ignore above this line ////////////////////
+var debugMode = false;
 
 function main() {
-    var n = parseInt(readLine());
-    arr = readLine().split(' ');
-    arr = arr.map(Number);
+    h = readLine().split(' ');
+    h = h.map(Number);
+    var word = readLine();
     
-    var sum = 0;
-    for(var i = 0; i < arr.length; i++) {
-    	sum += arr[i];
+    var max = 0;
+    for(var i = 0; i < word.length; i++) {
+    	var letter = word.charAt(i).charCodeAt() - 'a'.charCodeAt();
+    	if(debugMode)
+    		console.log(letter);
+    	max = Math.max(max, h[letter]);
     }
-    console.log(sum);
+    console.log(word.length * max);
 }
