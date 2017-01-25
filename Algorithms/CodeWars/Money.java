@@ -2,7 +2,7 @@ package CodeWars;
 
 /**
  * Money, Money, Money!
- * @author AF17783
+ * @author tmosest
  *
  */
 public class Money {

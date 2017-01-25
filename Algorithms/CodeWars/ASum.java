@@ -1,5 +1,9 @@
 package CodeWars;
 
+/**
+ * Build a Pile of Cubes
+ * @author tmosest
+ */
 public class ASum {
 	
 	public static long findNb(long m) {
