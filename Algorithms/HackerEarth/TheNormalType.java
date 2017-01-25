@@ -23,33 +23,32 @@ public class TheNormalType {
 		
 		int[] array = new int[size];
 		
+		HashSet<Integer> distinctElements = new HashSet<Integer>();
+		int count = 0, numberOfDistinct = 0;
+		
 		for(int i = 0; i < size; i++) {
 			array[i] = in.nextInt();
+			distinctElements.add(array[i]);
 		}
 		
 		in.close();
 		
-		HashSet<String> distinctSubArrays = new HashSet<String>();
+		numberOfDistinct = distinctElements.size();
 		
 		for(int i = 0; i < size; i++) {
 			for(int j = i; j < size; j++) {
 				int[] a = new int[j - i + 1];
+				distinctElements = new HashSet<Integer>();
 				for(int k = i, l = 0; k <= j; k++, l++) {
 					a[l] = array[k];
+					distinctElements.add(a[l]);
 				}
-				Arrays.sort(a);
-				distinctSubArrays.add(Arrays.toString(a));
-				if(debugMode) {
-					System.out.println(Arrays.toString(a));
-				}
+				if(distinctElements.size() == numberOfDistinct)
+					count++;
 			}
 		}
 		
-		if(debugMode)
-			for(String s : distinctSubArrays)
-				System.out.println(s);
-		
-		System.out.println(distinctSubArrays.size() - 1);
+		System.out.println(count);
 	}
 	
 	private static void printArray(int[] a) {
