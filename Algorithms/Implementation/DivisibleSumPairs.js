@@ -19,19 +19,12 @@ function readLine() {
 }
 
 /////////////// ignore above this line ////////////////////
-var debugMode = false;
 
 function main() {
-    h = readLine().split(' ');
-    h = h.map(Number);
-    var word = readLine();
-    
-    var max = 0;
-    for(var i = 0; i < word.length; i++) {
-    	var letter = word.charAt(i).charCodeAt() - 'a'.charCodeAt();
-    	if(debugMode)
-    		console.log(letter);
-    	max = Math.max(max, h[letter]);
-    }
-    console.log(word.length * max);
+    var n_temp = readLine().split(' ');
+    var n = parseInt(n_temp[0]);
+    var k = parseInt(n_temp[1]);
+    a = readLine().split(' ');
+    a = a.map(Number);
+
 }
