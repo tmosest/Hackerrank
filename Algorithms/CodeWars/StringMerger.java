@@ -1,6 +1,6 @@
 package CodeWars;
 /**
- * Decode the Morse code, advanced
+ * Merged String Checker
  * @author tmosest
  */
 public class StringMerger {
@@ -21,7 +21,7 @@ public class StringMerger {
     	
     	char sLetter, part1Letter, part2Letter;
     	
-    	while(part1Last < part1.length() - 1 && part2Last < part2.length() - 1) {
+    	while(part1Last < part1.length() && part2Last < part2.length()) {
 	    	sLetter = s.charAt(sIndex);
 	    	if(part1Index < part1.length()) {
 	    		part1Letter = part1.charAt(part1Index);
