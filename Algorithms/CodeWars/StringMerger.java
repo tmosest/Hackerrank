@@ -5,13 +5,19 @@ package CodeWars;
  */
 public class StringMerger {
 
-	private static final boolean debugMode = true;
+	private static final boolean debugMode = false;
 	
     public static boolean isMerge(String s, String part1, String part2) {
     	
     	if(debugMode) 
-    		System.out.println("s: " + s);
+    		System.out.println("s: " + s + " part1: " + part1 + " part2: " + part2);
     	
+      if(s.length() == 0) {
+        if(part1.length() == 0 || part2.length() == 0)
+          return true;
+        return false;
+      }
+              
     	if(part1.length() + part2.length() < s.length())
     		return false;
     	
