@@ -21,9 +21,9 @@ public class StringMerger {
     	
     	char sLetter, part1Letter, part2Letter;
     	
-    	while(part1Last > 0 && part2Last > 0) {
+    	while(part1Last >= 0 && part2Last >= 0) {
     		sLetter = s.charAt(sIndex);
-    		if(part1Index > 0) {
+    		if(part1Index >= 0) {
 	    		part1Letter = part1.charAt(part1Index);
 	    		if(debugMode)
 	    			System.out.println("sLetter: " + sLetter + " part1Letter: " + part1Letter);
@@ -34,7 +34,7 @@ public class StringMerger {
 	    			part2Index = part2Last - 1;
 	    		}
 	    	}
-    		if(part2Index > 0) {
+    		if(part2Index >= 0) {
 	    		part2Letter = part2.charAt(part2Index);
 	    		if(debugMode)
 	    			System.out.println("sLetter: " + sLetter + " part2Letter: " + part2Letter);
