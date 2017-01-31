@@ -78,7 +78,7 @@ public class BetweenTwoSets {
 	// Simple Algorithm to calculate LCM
 	public static int LCM(int a, int b) 
 	{
-		return Math.abs(a * b)/ GCD(a, b);
+		return Math.abs(a * b) / GCD(a, b);
 	}
 	
 	// Determines if divider is a factor of number
