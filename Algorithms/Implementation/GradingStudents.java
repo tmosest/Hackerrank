@@ -10,10 +10,20 @@ public class GradingStudents {
 	
 	private static boolean debugMode = false;
 	
+	/**
+	 * Finds the next multiple of 5 that is larger than the input number.
+	 * @param number
+	 * @return
+	 */
 	private static int findNextLargestMultipleOfFive(int number) {
 		return ((number / 5) + 1) * 5;
 	}
 	
+	/**
+	 * Determines the final grade based on rounding rules.
+	 * @param grade
+	 * @return
+	 */
 	private static int roundGrade(int grade) {
 		int roundedGrade = grade;
 		if(grade >= 38) {
@@ -28,6 +38,11 @@ public class GradingStudents {
 		return roundedGrade;
 	}
 	
+	/**
+	 * Loops through an array of grades and returns the rounded grades.
+	 * @param grades
+	 * @return
+	 */
 	private static int[] solve(int[] grades){
         int[] finalGrades = new int[grades.length];
         
@@ -38,6 +53,10 @@ public class GradingStudents {
         return finalGrades;
     }
 
+	/**
+	 * Main to test the story.
+	 * @param args
+	 */
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         int n = in.nextInt();
